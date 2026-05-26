@@ -110,7 +110,7 @@ int main() {
                 // the message after ECHO
                 message.erase(0, 4);
             }
-            if (message.rfind("TIME", 0) == 0){
+            else if (message.rfind("TIME", 0) == 0){
                 // Checks to see if the message begins with TIME. Post Server time
                 // Converted into the Proper Format
                 auto now = std::chrono::system_clock::now();
@@ -131,9 +131,13 @@ int main() {
                 // Makes it so that the Time Messages match the formating that the others would have
                 message += '\n';
             }
+            else if (message.rfind("HELP", 0) == 0){}
+            else{
+                message = "ERROR: unknown command\n";
+            }
 
             // Echo the message to stdout.
-            std::cout << "Received: " << message << std::endl;
+            std::cout << "Received: " << message;
 
             // Respond to the client with the same message.
             ssize_t bytes_sent{send(client_fd, message.c_str(), message.size(), 0)};
