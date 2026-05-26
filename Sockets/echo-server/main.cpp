@@ -104,20 +104,36 @@ int main() {
 
             std::string message{buffer};
 
+            // We will now check the message to see if it fits out requirments
             if (message.rfind("ECHO", 0) == 0){
                 // Checks to see if the message begins with ECHO. If so, it will respond with
                 // the message after ECHO
-                message.erase(0, 5);
+                message.erase(0, 4);
             }
             if (message.rfind("TIME", 0) == 0){
                 // Checks to see if the message begins with TIME. Post Server time
                 // Converted into the Proper Format
-                message.erase(0, 5);
+                auto now = std::chrono::system_clock::now();
+
+                std::time_t time_now = std::chrono::system_clock::to_time_t(now);
+
+                // This makes the code match the local time
+                std::tm tm_now;
+                #if defined(_MSC_VER)
+                    localtime_s(&tm_now, &time_now); // Windows
+                #else
+                    localtime_r(&time_now, &tm_now); // POSIX/Linux
+                #endif
+
+                std::stringstream ss;
+                ss << std::put_time(&tm_now, "%H:%M:%S");
+                message = ss.str();
+                // Makes it so that the Time Messages match the formating that the others would have
+                message += '\n';
             }
-            // We will now check the message to see if it fits out requirments
 
             // Echo the message to stdout.
-            std::cout << "Received: " << message;
+            std::cout << "Received: " << message << std::endl;
 
             // Respond to the client with the same message.
             ssize_t bytes_sent{send(client_fd, message.c_str(), message.size(), 0)};
