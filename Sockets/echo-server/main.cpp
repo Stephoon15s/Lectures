@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <chrono>
+#include <iomanip>
 
 namespace {
     constexpr int PORT{9090};
@@ -113,6 +114,7 @@ int main() {
             else if (message.rfind("TIME", 0) == 0){
                 // Checks to see if the message begins with TIME. Post Server time
                 // Converted into the Proper Format
+                // Get the Time
                 auto now = std::chrono::system_clock::now();
 
                 std::time_t time_now = std::chrono::system_clock::to_time_t(now);
@@ -125,13 +127,26 @@ int main() {
                     localtime_r(&time_now, &tm_now); // POSIX/Linux
                 #endif
 
+                // Format
                 std::stringstream ss;
                 ss << std::put_time(&tm_now, "%H:%M:%S");
                 message = ss.str();
                 // Makes it so that the Time Messages match the formating that the others would have
                 message += '\n';
             }
-            else if (message.rfind("HELP", 0) == 0){}
+            else if (message.rfind("HELP", 0) == 0){
+                // The Help Command
+                message = "ECHO: Prints the message that is after the word\n";
+                message += "TIME: Prints the current server time in the ISO 8601 time format of \"hh:mm:ss\"\n";
+                message += "HELP: Describes the operations supported by the server\n";
+                message += "QUIT: CLoses the client connection\n";
+
+            }
+            else if (message.rfind("QUIT", 0) == 0){
+                std::cout << "Client disconnected.\n";
+                message = "QUIT\n";
+                break;
+            }
             else{
                 message = "ERROR: unknown command\n";
             }
