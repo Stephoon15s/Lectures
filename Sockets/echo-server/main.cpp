@@ -5,6 +5,7 @@
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <chrono>
 
 namespace {
     constexpr int PORT{9090};
@@ -102,6 +103,18 @@ int main() {
             buffer[bytes_received] = '\0';
 
             std::string message{buffer};
+
+            if (message.rfind("ECHO", 0) == 0){
+                // Checks to see if the message begins with ECHO. If so, it will respond with
+                // the message after ECHO
+                message.erase(0, 5);
+            }
+            if (message.rfind("TIME", 0) == 0){
+                // Checks to see if the message begins with TIME. Post Server time
+                // Converted into the Proper Format
+                message.erase(0, 5);
+            }
+            // We will now check the message to see if it fits out requirments
 
             // Echo the message to stdout.
             std::cout << "Received: " << message;
