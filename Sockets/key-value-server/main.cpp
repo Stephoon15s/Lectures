@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <vector>
+#include <algorithm>
 
 struct Command {
     std::string name{};
@@ -170,11 +171,29 @@ std::string handleCommand(const Command& command,
     }
     if (command.name == "KEYS"){
         // FIXEME: IMPLEMENT
+        // Make Vector
         std::vector<std::string> keys;
         keys.reserve(store.size());
+
+        // Store Keys
         for (auto const& element : store){
             keys.push_back(element.first);
         }
+        std::sort(keys.begin(), keys.end());
+
+        // Prepare Return
+        std::string Key_message = "KEYS [";
+        if (!keys.empty()){
+            Key_message += keys[0];
+            for (size_t key = 1; key < keys.size(); ++key){
+                Key_message += " ";
+                Key_message += keys[key];
+            }
+            Key_message += "]\n";
+        }else{
+            return "EMPTY\n";
+        }
+        return Key_message;
     }
     if (command.name == "QUIT") {
         if (!command.args.empty()) {
