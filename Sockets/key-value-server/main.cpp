@@ -153,7 +153,29 @@ std::string handleCommand(const Command& command,
 
         return "COUNT " + std::to_string(store.size()) + "\n";
     }
-
+    if (command.name == "EXISTS"){
+        if (command.args.size() != 1) {
+            return "ERROR EXISTS requires 1 key\n";
+        }
+        // Checks for Key
+        if (store.count(command.args[0]) > 0){
+            return "true\n";
+        }else{
+            return "false\n";
+        }
+    }
+    if (command.name == "CLEAR"){
+        store.clear();
+        return "OK\n";
+    }
+    if (command.name == "KEYS"){
+        // FIXEME: IMPLEMENT
+        std::vector<std::string> keys;
+        keys.reserve(store.size());
+        for (auto const& element : store){
+            keys.push_back(element.first);
+        }
+    }
     if (command.name == "QUIT") {
         if (!command.args.empty()) {
             return "ERROR QUIT takes no arguments\n";
