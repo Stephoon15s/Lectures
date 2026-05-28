@@ -179,7 +179,14 @@ std::string handleCommand(const Command& command,
         for (auto const& element : store){
             keys.push_back(element.first);
         }
-        std::sort(keys.begin(), keys.end());
+        std::sort(keys.begin(), keys.end(), [](const std::string& a, const std::string& b) {
+            return std::lexicographical_compare(
+                a.begin(), a.end(), b.begin(), b.end(),
+                [](const char char1, const char char2) {
+                    return std::tolower(char1) < std::tolower(char2);
+                }
+            );
+        });
 
         // Prepare Return
         std::string Key_message = "KEYS [";
