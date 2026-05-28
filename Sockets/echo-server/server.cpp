@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <chrono>
 #include <iomanip>
+#include <mutex>
+#include <thread>
 
 namespace {
     constexpr int PORT{9090};
@@ -24,7 +26,8 @@ namespace {
     }
 }
 
-void handleClient(int client_fd){
+void handleClient(int client_fd, int& counter, std::mutex& mtx){
+        // Handle Mutex Increments
         char buffer[BUFFER_SIZE]{};
 
         while (true) {
@@ -83,10 +86,16 @@ void handleClient(int client_fd){
                 message += "HELP: Describes the operations supported by the server\n";
                 message += "QUIT: CLoses the client connection\n";
 
-            }
-            else if (message.rfind("QUIT", 0) == 0){
+            }else if (message.rfind("CLIENTS", 0) == 0){
+                // Implement
+                // Lock Mutex
+                // Message is the bumber of clients
+                // Unlock Mutex
+            }else if (message.rfind("QUIT", 0) == 0){
                 std::cout << "Client disconnected.\n";
                 message = "QUIT\n";
+                // Lock Mutex
+                // Decrease Counter
                 break;
             }
             else{
@@ -110,6 +119,7 @@ void handleClient(int client_fd){
 
 int main() {
     int counter; // Keeps track of number of clients in
+    std::mutex mtx;
     try {
         // Initialize an Internet (AF_INET) socket using a reliable TCP connection (SOCK_STREAM).
         int server_fd{socket(AF_INET, SOCK_STREAM, 0)};
@@ -144,7 +154,7 @@ int main() {
         std::cout << "Server listening on port " << PORT << "...\n";
 
 
-        // ACCEPTING HERE
+        // ACCEPTING CLIENTS HERE
         while (true){
         // Initialize a second socket to use when responding to a client.
         sockaddr_in client_addr{};
@@ -171,7 +181,9 @@ int main() {
                   << ntohs(client_addr.sin_port)
                   << "\n";
 
-        handleClient(client_fd);
+        // Handle the Client in it's own thread
+        std::thread clientThread(handleClient, client_fd, std::ref(counter), std::ref(mtx));
+        clientThread.detach();
         }
 
         // Around this point, make it into an iterative server, similar to the Key-Value Server from Day 2
