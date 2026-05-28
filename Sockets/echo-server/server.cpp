@@ -94,7 +94,8 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
                 // Implement
                 // Lock Mutex
                 std::lock_guard<std::mutex> lock(mtx);
-                message = std::to_string(counter);
+                message = "Number of Clients: ";
+                message += std::to_string(counter);
                 message += "\n";
                 // Message is the bumber of clients
                 // Unlock Mutex
@@ -120,6 +121,8 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
         }
 
         close_socket(client_fd);
+        std::lock_guard<std::mutex> lock(mtx);
+        counter -= 1;
 }
 
 int main() {
