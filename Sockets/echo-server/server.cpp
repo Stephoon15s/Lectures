@@ -28,6 +28,10 @@ namespace {
 
 void handleClient(int client_fd, int& counter, std::mutex& mtx){
         // Handle Mutex Increments
+        mtx.lock();
+        counter += 1;
+        mtx.unlock();
+
         char buffer[BUFFER_SIZE]{};
 
         while (true) {
@@ -89,13 +93,14 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
             }else if (message.rfind("CLIENTS", 0) == 0){
                 // Implement
                 // Lock Mutex
+                std::lock_guard<std::mutex> lock(mtx);
+                message = std::to_string(counter);
+                message += "\n";
                 // Message is the bumber of clients
                 // Unlock Mutex
             }else if (message.rfind("QUIT", 0) == 0){
                 std::cout << "Client disconnected.\n";
                 message = "QUIT\n";
-                // Lock Mutex
-                // Decrease Counter
                 break;
             }
             else{
@@ -118,7 +123,7 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
 }
 
 int main() {
-    int counter; // Keeps track of number of clients in
+    int counter = 0; // Keeps track of number of clients in
     std::mutex mtx;
     try {
         // Initialize an Internet (AF_INET) socket using a reliable TCP connection (SOCK_STREAM).
