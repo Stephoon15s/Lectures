@@ -5,14 +5,26 @@
 #include <optional>
 #include <sstream>
 #include <string>
+#include <mutex>
+#include <thread>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+
+/* This key-value server uses one thread per client that connects on the socket. A mutual exclusion lock
+ * ensures that only one thread accesses the store at a time.
+ */
+
+
 
 struct Command {
     std::string name{};
     std::vector<std::string> args{};
 };
+
 
 void closeSocket(int fd) {
     if (fd >= 0) {
@@ -96,7 +108,7 @@ Command parseCommand(const std::string& message) {
 
 // Apply a Command to the current store.
 std::string handleCommand(const Command& command,
-                           std::unordered_map<std::string, std::string>& store) {
+                          std::unordered_map<std::string, std::string>& store) {
     if (command.name.empty()) {
         return "ERROR empty command\n";
     }
@@ -109,7 +121,6 @@ std::string handleCommand(const Command& command,
         const std::string& key{command.args[0]};
         const std::string& value{command.args[1]};
 
-        // Associate the key with the value in the store.
         store[key] = value;
         return "OK\n";
     }
@@ -118,17 +129,15 @@ std::string handleCommand(const Command& command,
         if (command.args.size() != 1) {
             return "ERROR GET requires key\n";
         }
-
         const std::string& key{command.args[0]};
-        // Attempt to find the key in the map.
         auto it{store.find(key)};
 
         if (it == store.end()) {
             return "NOT_FOUND\n";
         }
 
-        // it->first is the key; it->second is the value.
         return "VALUE " + it->second + "\n";
+
     }
 
     if (command.name == "DELETE") {
@@ -137,9 +146,7 @@ std::string handleCommand(const Command& command,
         }
 
         const std::string& key{command.args[0]};
-        // erase() returns the number of keys that were removed.
         std::size_t removed{store.erase(key)};
-
         if (removed == 0) {
             return "NOT_FOUND\n";
         }
@@ -152,56 +159,11 @@ std::string handleCommand(const Command& command,
             return "ERROR COUNT takes no arguments\n";
         }
 
-        return "COUNT " + std::to_string(store.size()) + "\n";
-    }
-    if (command.name == "EXISTS"){
-        if (command.args.size() != 1) {
-            return "ERROR EXISTS requires 1 key\n";
-        }
-        // Checks for Key
-        if (store.count(command.args[0]) > 0){
-            return "true\n";
-        }else{
-            return "false\n";
-        }
-    }
-    if (command.name == "CLEAR"){
-        store.clear();
-        return "OK\n";
-    }
-    if (command.name == "KEYS"){
-        // FIXEME: IMPLEMENT
-        // Make Vector
-        std::vector<std::string> keys;
-        keys.reserve(store.size());
+        std::size_t size{store.size()};
+        return "COUNT " + std::to_string(size) + "\n";
 
-        // Store Keys
-        for (auto const& element : store){
-            keys.push_back(element.first);
-        }
-        std::sort(keys.begin(), keys.end(), [](const std::string& a, const std::string& b) {
-            return std::lexicographical_compare(
-                a.begin(), a.end(), b.begin(), b.end(),
-                [](const char char1, const char char2) {
-                    return std::tolower(char1) < std::tolower(char2);
-                }
-            );
-        });
-
-        // Prepare Return
-        std::string Key_message = "KEYS [";
-        if (!keys.empty()){
-            Key_message += keys[0];
-            for (size_t key = 1; key < keys.size(); ++key){
-                Key_message += " ";
-                Key_message += keys[key];
-            }
-            Key_message += "]\n";
-        }else{
-            return "EMPTY\n";
-        }
-        return Key_message;
     }
+
     if (command.name == "QUIT") {
         if (!command.args.empty()) {
             return "ERROR QUIT takes no arguments\n";
@@ -322,7 +284,8 @@ int main(int argc, char* argv[]) {
                   << ntohs(client_addr.sin_port)
                   << '\n';
 
-        handleClient(client_fd, store);
+        std::thread clientThread{handleClient, client_fd, std::ref(store)};
+        clientThread.detach();
     }
 
     closeSocket(server_fd);
