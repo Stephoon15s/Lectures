@@ -27,9 +27,13 @@ namespace {
 }
 
 void handleClient(int client_fd, int& counter, std::mutex& mtx){
+        bool run = true;
         // Handle Mutex Increments
         mtx.lock();
         counter += 1;
+        if (counter > 1){
+            run = false;
+        }
         mtx.unlock();
 
         char buffer[BUFFER_SIZE]{};
@@ -54,6 +58,10 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
 
             std::string message{buffer};
 
+            if (run == false){
+                message == "ERROR: Too Many Clients\n";
+                break;
+            }
             // We will now check the message to see if it fits out requirments
             if (message.rfind("ECHO", 0) == 0){
                 // Checks to see if the message begins with ECHO. If so, it will respond with
@@ -100,7 +108,6 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
                 // Message is the bumber of clients
                 // Unlock Mutex
             }else if (message.rfind("QUIT", 0) == 0){
-                std::cout << "Client disconnected.\n";
                 message = "QUIT\n";
                 break;
             }
@@ -123,6 +130,7 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
         close_socket(client_fd);
         std::lock_guard<std::mutex> lock(mtx);
         counter -= 1;
+        std::cout << "Client disconnected.\n";
 }
 
 int main() {
