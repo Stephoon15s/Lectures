@@ -10,6 +10,8 @@
 #include <mutex>
 #include <thread>
 
+const int limit = 3;
+
 namespace {
     constexpr int PORT{9090};
     constexpr int BACKLOG{5};
@@ -30,9 +32,11 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
         bool run = true;
         // Handle Mutex Increments
         mtx.lock();
-        counter += 1;
-        if (counter > 1){
+        if (counter >= limit){
+            std::cout << "Limit has been reached.\n";
             run = false;
+        }else{
+            counter += 1;
         }
         mtx.unlock();
 
@@ -59,9 +63,16 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
             std::string message{buffer};
 
             if (run == false){
-                message == "ERROR: Too Many Clients\n";
-                break;
+                message = "ERROR Too Many Clients\n";
+                // Echo the message to stdout.
+                std::cout << "Received: " << message;
+
+                // Respond to the client with the same message.
+                ssize_t bytes_sent{send(client_fd, message.c_str(), message.size(), 0)};
+                
+                return;
             }
+
             // We will now check the message to see if it fits out requirments
             if (message.rfind("ECHO", 0) == 0){
                 // Checks to see if the message begins with ECHO. If so, it will respond with
@@ -109,6 +120,12 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
                 // Unlock Mutex
             }else if (message.rfind("QUIT", 0) == 0){
                 message = "QUIT\n";
+                // Echo the message to stdout.
+                std::cout << "Received: " << message;
+
+                // Respond to the client with the same message.
+                ssize_t bytes_sent{send(client_fd, message.c_str(), message.size(), 0)};
+                
                 break;
             }
             else{
