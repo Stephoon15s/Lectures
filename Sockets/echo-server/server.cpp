@@ -107,6 +107,7 @@ void handleClient(int client_fd, int& counter, std::mutex& mtx){
                 message = "ECHO: Prints the message that is after the word\n";
                 message += "TIME: Prints the current server time in the ISO 8601 time format of \"hh:mm:ss\"\n";
                 message += "HELP: Describes the operations supported by the server\n";
+                message += "CLIENTS: Informs us of how many clients are accessing the server\n";
                 message += "QUIT: CLoses the client connection\n";
 
             }else if (message.rfind("CLIENTS", 0) == 0){
