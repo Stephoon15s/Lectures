@@ -1,37 +1,21 @@
+#include <arpa/inet.h>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <unordered_map>
+#include <netinet/in.h>
 #include <optional>
 #include <sstream>
 #include <string>
-#include <mutex>
-#include <thread>
-#include <unordered_map>
-#include <vector>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
-
-/* This key-value server uses one thread per client that connects on the socket. A mutual exclusion lock
- * ensures that only one thread accesses the store at a time.
- */
-
-
+#include <unistd.h>
+#include <vector>
+#include <algorithm>
 
 struct Command {
     std::string name{};
     std::vector<std::string> args{};
-};
-
-/* The hashmap is a critical resource: only one thread can access it at a time, or else race conditions occur
- * and the map can be corrupted. In addition to passing the map to handleClient(), we also need to pass a mutual
- * exclusion lock, so we wrap the two together in a single SharedStore object.
- */
-struct SharedStore {
-    std::unordered_map<std::string, std::string> values{};
-    std::mutex mutex{};
 };
 
 void closeSocket(int fd) {
@@ -116,7 +100,7 @@ Command parseCommand(const std::string& message) {
 
 // Apply a Command to the current store.
 std::string handleCommand(const Command& command,
-                          SharedStore& store) {
+                           std::unordered_map<std::string, std::string>& store) {
     if (command.name.empty()) {
         return "ERROR empty command\n";
     }
@@ -129,16 +113,7 @@ std::string handleCommand(const Command& command,
         const std::string& key{command.args[0]};
         const std::string& value{command.args[1]};
 
-        {
-            // Constructing a lock_guard will lock the store's mutex. If the mutex is already locked,
-            // this line will block until the lock is released.
-            std::lock_guard<std::mutex> lock{store.mutex};
-
-            store.values[key] = value;
-            // Once the lock_guard goes out of scope, the mutex lock is released.
-        } // By putting the lock_guard in this anonymous scope block, we force it to release the lock
-          // immediately after completing the hash map update operation.
-
+        store[key] = value;
         return "OK\n";
     }
 
@@ -146,20 +121,15 @@ std::string handleCommand(const Command& command,
         if (command.args.size() != 1) {
             return "ERROR GET requires key\n";
         }
+
         const std::string& key{command.args[0]};
-        std::string value;
-        
-        {
-            std::lock_guard<std::mutex> lock{store.mutex};
-            auto it{store.values.find(key)};
+        auto it{store.find(key)};
 
-            if (it == store.values.end()) {
-                return "NOT_FOUND\n";
-            }
-            value = it->second;
+        if (it == store.end()) {
+            return "NOT_FOUND\n";
         }
-        return "VALUE " + value + "\n";
 
+        return "VALUE " + it->second + "\n";
     }
 
     if (command.name == "DELETE") {
@@ -168,13 +138,8 @@ std::string handleCommand(const Command& command,
         }
 
         const std::string& key{command.args[0]};
-        std::size_t removed;
+        std::size_t removed{store.erase(key)};
 
-        {
-            std::lock_guard<std::mutex> lock{store.mutex};
-            // erase() returns the number of keys that were removed.
-            removed = store.values.erase(key);
-        }
         if (removed == 0) {
             return "NOT_FOUND\n";
         }
@@ -187,16 +152,56 @@ std::string handleCommand(const Command& command,
             return "ERROR COUNT takes no arguments\n";
         }
 
-        std::size_t size;
-        
-        {
-            std::lock_guard<std::mutex> lock{store.mutex};
-            size = store.values.size();
-        }
-        return "COUNT " + std::to_string(size) + "\n";
-
+        return "COUNT " + std::to_string(store.size()) + "\n";
     }
+    if (command.name == "EXISTS"){
+        if (command.args.size() != 1) {
+            return "ERROR EXISTS requires 1 key\n";
+        }
+        // Checks for Key
+        if (store.count(command.args[0]) > 0){
+            return "true\n";
+        }else{
+            return "false\n";
+        }
+    }
+    if (command.name == "CLEAR"){
+        store.clear();
+        return "OK\n";
+    }
+    if (command.name == "KEYS"){
+        // FIXEME: IMPLEMENT
+        // Make Vector
+        std::vector<std::string> keys;
+        keys.reserve(store.size());
 
+        // Store Keys
+        for (auto const& element : store){
+            keys.push_back(element.first);
+        }
+        std::sort(keys.begin(), keys.end(), [](const std::string& a, const std::string& b) {
+            return std::lexicographical_compare(
+                a.begin(), a.end(), b.begin(), b.end(),
+                [](const char char1, const char char2) {
+                    return std::tolower(char1) < std::tolower(char2);
+                }
+            );
+        });
+
+        // Prepare Return
+        std::string Key_message = "KEYS [";
+        if (!keys.empty()){
+            Key_message += keys[0];
+            for (size_t key = 1; key < keys.size(); ++key){
+                Key_message += " ";
+                Key_message += keys[key];
+            }
+            Key_message += "]\n";
+        }else{
+            return "EMPTY\n";
+        }
+        return Key_message;
+    }
     if (command.name == "QUIT") {
         if (!command.args.empty()) {
             return "ERROR QUIT takes no arguments\n";
@@ -208,7 +213,7 @@ std::string handleCommand(const Command& command,
     return "ERROR unknown command\n";
 }
 
-void handleClient(int client_fd, SharedStore& store) {
+void handleClient(int client_fd, std::unordered_map<std::string, std::string>& store) {
     sendAll(client_fd, "OK connected\n");
 
     while (true) {
@@ -289,7 +294,7 @@ int main(int argc, char* argv[]) {
     constexpr int PORT{9090};
 
     int server_fd{createServerSocket(PORT)};
-    SharedStore store{};
+    std::unordered_map<std::string, std::string> store{};
 
     std::cout << "Key-value server listening on port " << PORT << '\n';
 
@@ -317,8 +322,7 @@ int main(int argc, char* argv[]) {
                   << ntohs(client_addr.sin_port)
                   << '\n';
 
-        std::thread clientThread{handleClient, client_fd, std::ref(store)};
-        clientThread.detach();
+        handleClient(client_fd, store);
     }
 
     closeSocket(server_fd);
