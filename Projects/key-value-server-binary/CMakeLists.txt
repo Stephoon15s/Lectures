@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(list_server_binary)
+project(key_value_server_binary)
 
 set(CMAKE_CXX_STANDARD 20)
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(list_client_binary)
+project(ket_value_client_binary)
 
 set(CMAKE_CXX_STANDARD 20)
 
