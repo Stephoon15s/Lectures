@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/key_value_client.dir/main.cpp.o CMakeFiles/key_value_client.dir/src/socket_utils.cpp.o CMakeFiles/key_value_client.dir/src/types.cpp.o CMakeFiles/key_value_client.dir/src/remote_list_stub.cpp.o CMakeFiles/key_value_client.dir/src/remote_list.cpp.o -o key_value_client 

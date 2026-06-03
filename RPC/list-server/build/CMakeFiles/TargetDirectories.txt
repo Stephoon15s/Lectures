@@ -1,0 +1,3 @@
+/home/falco/Projects/Lectures/RPC/list-server/build/CMakeFiles/list_server.dir
+/home/falco/Projects/Lectures/RPC/list-server/build/CMakeFiles/edit_cache.dir
+/home/falco/Projects/Lectures/RPC/list-server/build/CMakeFiles/rebuild_cache.dir

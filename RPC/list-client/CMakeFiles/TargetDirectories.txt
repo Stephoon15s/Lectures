@@ -1,0 +1,3 @@
+/home/falco/Projects/Lectures/RPC/list-client/CMakeFiles/key_value_client.dir
+/home/falco/Projects/Lectures/RPC/list-client/CMakeFiles/edit_cache.dir
+/home/falco/Projects/Lectures/RPC/list-client/CMakeFiles/rebuild_cache.dir
