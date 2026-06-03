@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include <utility>
 #include <vector>
+// HW 2 Includes
+#include <unordered_map>
 
 std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
                                         MessageReader& reader,
