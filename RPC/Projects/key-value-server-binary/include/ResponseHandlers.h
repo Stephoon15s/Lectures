@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <cstdint>
 
 enum class ResponseOpcode : std::uint8_t {
     Ok = 0x40,
