@@ -34,6 +34,25 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
 
 std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store){
     // Implement
+    std::optional<std::string> message{reader.readString()};
+    if (!message.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("PUT requires value");
+    }
+
+    std::string value{};
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        // Check if it even exists.
+        auto it{store.values.find(key)};
+        if (it == store.values.end()) {
+            return "NOT_FOUND\n";
+        }
+        // Gets the value
+        value = store.values[getIndex];
+    }
+
+    return buildValueResponse(value);
+
 }
 std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store){
     // Implement
