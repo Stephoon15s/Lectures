@@ -2,6 +2,37 @@
 #include "ResponseHandlers.h"
 #include <utility>
 
+std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& store){
+    // Set up vars
+    std::optional<std::string> message{reader.readString()};
+    std::string seperator = " ";
+
+    std::string key;
+    std::string value;
+
+    // Check if we have the appropriate vals
+    if (!message.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("PUT requires value");
+    }
+    
+    // Split the String into key and val. 
+    std::size_t pos = message.find(seperator);
+    if (pos != std::string::npos){
+        key = message.substr(0, pos);
+        value = message.substr(pos + seperator.length());
+    }else{
+        return buildErrorResponse("PUT requires Key and Value");
+    }
+    // Put the key and value pair into the store
+    {
+        std::lock_guard<std::mutex> lock{store.mutex}; 
+        store.values[key] = value;
+    }
+
+    return buildStatusResponse(ResponseOpcode::Ok);
+
+// OLD STUFF
+
 std::vector<std::uint8_t> handlePushRequest(MessageReader& reader, SharedStore& store) {
     // Push: 1 string argument.
     std::optional<std::string> value{reader.readString()};
