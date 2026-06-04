@@ -2,8 +2,8 @@ TO DO:
 
 1. (DONE) Edit Shared Store to use unordered map (DONE)
 
-2. enum class RequestOpcode to support all the operations from homework 2. Each opcode should have a distinct value.
-enum class ResponseOpcode to add responses for KEYS and EXISTS and also NOT_FOUND.
+2. (DONE) enum class RequestOpcode to support all the operations from homework 2. Each opcode should have a distinct value.
+enum class ResponseOpcode to add responses for KEYS and EXISTS and also NOT_FOUND. (DONE)
 
 3. The various handleXXRequest functions. You can rename and reuse these functions, or write your own following their lead. Each handleXXRequest function is given a MessageReader that decodes the arguments to the request, as well as the shared store to operate on. Use .readString(), .readInt32(), and .readByte() of the MessageReader to read the required arguments. You should return an error response if the MessageReader returns a null value. Otherwise, return an appropriate response message according to the homework 2 application protocol.
 
