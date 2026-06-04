@@ -30,7 +30,7 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
     }
 
     return buildStatusResponse(ResponseOpcode::Ok);
-
+}
 
 std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store){
     // Implement
