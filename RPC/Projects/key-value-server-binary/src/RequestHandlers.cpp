@@ -12,7 +12,7 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
 
     // Check if we have the appropriate vals
     if (!message.has_value() || !reader.isAtEnd()) {
-        return buildErrorResponse("PUT requires value");
+        return buildErrorResponse("PUT requires Key and Value");
     }
     
     // Split the String into key and val. 
@@ -33,10 +33,10 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
 }
 
 std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store){
-    // Implement
-    std::optional<std::string> message{reader.readString()};
+    // Check if there is a key
+    std::optional<std::string> key{reader.readString()};
     if (!message.has_value() || !reader.isAtEnd()) {
-        return buildErrorResponse("PUT requires value");
+        return buildErrorResponse("GET requires a key");
     }
 
     std::string value{};
@@ -45,7 +45,7 @@ std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& s
         // Check if it even exists.
         auto it{store.values.find(key)};
         if (it == store.values.end()) {
-            return "NOT_FOUND\n";
+            return buildErrorResponse("Invalid Key")
         }
         // Gets the value
         value = store.values[getIndex];
@@ -55,7 +55,21 @@ std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& s
 
 }
 std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store){
-    // Implement
+    // Check if there is a key
+    std::optional<std::string> key{reader.readString()};
+    if (!message.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("Delete requires a key");
+    }
+
+    {
+        // Handle Deletion
+        std::lock_guard<std::mutex> lock{store.mutex};
+        std::size_t removed{store.erase(key)};
+        if (removed == 0) {
+            return buildErrorResponse("Invalid Key");
+        }
+        return buildValueResponse(removed);
+    }
 }
 std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store){
     // Implement
