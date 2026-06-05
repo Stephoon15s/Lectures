@@ -104,11 +104,6 @@ std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore
             return buildStatusResponse(ResponseOpcode::Not_Found)
         }
     }
-    if (store.count(command.args[0]) > 0){
-            return "true\n";
-        }else{
-            return "false\n";
-        }
 
 }
 std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store){
