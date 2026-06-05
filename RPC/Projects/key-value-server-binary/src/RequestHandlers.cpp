@@ -58,7 +58,7 @@ std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore
     // Check if there is a key
     std::optional<std::string> key{reader.readString()};
     if (!message.has_value() || !reader.isAtEnd()) {
-        return buildErrorResponse("Delete requires a key");
+        return buildErrorResponse("DELETE requires a key");
     }
 
     std::size_t removed;
@@ -88,6 +88,27 @@ std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore&
 }
 std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store){
     // Implement
+    // Check if there is a key
+    std::optional<std::string> key{reader.readString()};
+    if (!message.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("EXISTS requires a key");
+    }
+
+    // Find the Key
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        if store.values.count(key) > 0{
+            return buildStatusResponse(ResponseOpcode::Exists)
+        }
+        else{
+            return buildStatusResponse(ResponseOpcode::Not_Found)
+        }
+    }
+    if (store.count(command.args[0]) > 0){
+            return "true\n";
+        }else{
+            return "false\n";
+        }
 
 }
 std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store){
