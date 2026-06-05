@@ -73,7 +73,17 @@ std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore
     return buildValueResponse(removed);
 }
 std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store){
-    // Implement
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("COUNT takes no arguments");
+    }
+
+    std::size_t count{};
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        count = store.values.size();
+    }
+
+    return buildCountResponse(count);
 
 }
 std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store){
