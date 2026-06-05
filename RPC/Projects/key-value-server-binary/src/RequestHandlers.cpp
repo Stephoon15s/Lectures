@@ -108,6 +108,16 @@ std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore
 }
 std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store){
     // Implement
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("CLEAR takes no arguments");
+    }
+
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        store.values.clear();
+    }
+
+    return buildStatusResponse(ResponseOpcode::Ok);
 
 }
 std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store){
