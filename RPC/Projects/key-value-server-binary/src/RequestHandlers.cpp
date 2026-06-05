@@ -61,15 +61,16 @@ std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore
         return buildErrorResponse("Delete requires a key");
     }
 
+    std::size_t removed;
     {
         // Handle Deletion
         std::lock_guard<std::mutex> lock{store.mutex};
-        std::size_t removed{store.erase(key)};
+        removed{store.erase(key)};
         if (removed == 0) {
             return buildErrorResponse("Invalid Key");
         }
-        return buildValueResponse(removed);
     }
+    return buildValueResponse(removed);
 }
 std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store){
     // Implement
