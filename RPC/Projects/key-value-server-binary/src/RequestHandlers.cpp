@@ -121,14 +121,58 @@ std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore&
 
 }
 std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store){
+    // Use a Value Response for now. 
     // Implement
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("KEYS takes no arguments");
+    }
+
+    {
+        std::vector<std::string> keys;
+        keys.reserve(store.values.size());
+
+        // Store Keys
+        for (auto const& element : store.values){
+            keys.push_back(element.first);
+        }
+        std::sort(keys.begin(), keys.end(), [](const std::string& a, const std::string& b) {
+            return std::lexicographical_compare(
+                a.begin(), a.end(), b.begin(), b.end(),
+                [](const char char1, const char char2) {
+                    return std::tolower(char1) < std::tolower(char2);
+                }
+            );
+        });
+
+        // Prepare Return
+        std::string Key_message = std::to_string(store.values.size());
+        ey_message += " KEYS [";
+        if (!keys.empty()){
+            Key_message += keys[0];
+            for (size_t key = 1; key < keys.size(); ++key){
+                Key_message += " ";
+                Key_message += keys[key];
+            }
+            Key_message += "]\n";
+        }else{
+            return buildErrorResponse("There Are No Keys")
+        }
+        return buildValueResponse(Key_message);
+
+    }
+
+    // return buildValueResponse();
 
 }
 std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store){
-    // Implement
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("QUIT takes no arguments");
+    }
+
+    return buildStatusResponse(ResponseOpcode::Bye);
 
 }
-std::vector<std::uint8_t> handleNotFoundRequest(MessageReader& reader, SharedStore& store){
+std::vector<std::uint8_t> handleNot_FoundRequest(MessageReader& reader, SharedStore& store){
     // Implement
 
 }
