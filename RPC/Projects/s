@@ -5,12 +5,15 @@ TO DO:
 2. (DONE) enum class RequestOpcode to support all the operations from homework 2. Each opcode should have a distinct value.
 enum class ResponseOpcode to add responses for KEYS and EXISTS and also NOT_FOUND. (DONE)
 
+(Done? Still unsure of what it meant by handler)
 3. The various handleXXRequest functions. You can rename and reuse these functions, or write your own following their lead. Each handleXXRequest function is given a MessageReader that decodes the arguments to the request, as well as the shared store to operate on. Use .readString(), .readInt32(), and .readByte() of the MessageReader to read the required arguments. You should return an error response if the MessageReader returns a null value. Otherwise, return an appropriate response message according to the homework 2 application protocol.
 
 4. You will need handlers for PUT, GET, DELETE, COUNT, EXISTS, and KEYS.
 
     The response for EXISTS should be OK if the key exists, and NOT_FOUND otherwise.
     The response for KEYS should be an integer count of the number of keys, followed by the encoded strings for each key (which, as always, includes the length of the string prior to the string's actual bytes).
+
+(Done)
 
 5. handleRequest, to call your new functions depending on the opcode.
 

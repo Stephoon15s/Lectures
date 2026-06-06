@@ -98,28 +98,24 @@ std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
                                         MessageReader& reader,
                                         SharedStore& store) {
     switch (opcode) {
-        case RequestOpcode::Push:
-            return handlePushRequest(reader, store);
-        case RequestOpcode::Pop:
-            return handlePopRequest(reader, store);
-        case RequestOpcode::Insert:
-            return handleInsertRequest(reader, store);
-        case RequestOpcode::Remove:
-            return handleRemoveRequest(reader, store);
-        case RequestOpcode::Count:
-            return handleCountRequest(reader, store);
+        case RequestOpcode::Put:
+            return handlePutRequest(reader, store);
         case RequestOpcode::Get:
             return handleGetRequest(reader, store);
-        case RequestOpcode::Set:
-            return handleSetRequest(reader, store);
-        case RequestOpcode::Swap:
-            return handleSwapRequest(reader, store);
+        case RequestOpcode::Delete:
+            return handleDeleteRequest(reader, store);
+        case RequestOpcode::Count:
+            return handleCountRequest(reader, store);
+        case RequestOpcode::Exists:
+            return handleExistsRequest(reader, store);
         case RequestOpcode::Clear:
             return handleClearRequest(reader, store);
+        case RequestOpcode::Keys:
+            return handleKeysRequest(reader, store);
         case RequestOpcode::Quit:
             return handleQuitRequest(reader, store);
     }
-
+    // I don't seem to need the not found request
     return buildErrorResponse("unknown opcode");
 }
 
