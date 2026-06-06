@@ -161,8 +161,6 @@ std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& 
 
     }
 
-    // return buildValueResponse();
-
 }
 std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store){
     if (!reader.isAtEnd()) {
@@ -173,7 +171,7 @@ std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& 
 
 }
 std::vector<std::uint8_t> handleNot_FoundRequest(MessageReader& reader, SharedStore& store){
-    // Implement
+    return buildErrorResponse("This is not a Command");
 
 }
 
