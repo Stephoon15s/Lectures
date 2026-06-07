@@ -138,24 +138,20 @@ std::vector<std::uint8_t> frameResponse(const std::vector<std::uint8_t>& payload
 // Convenient debugging method. I wish C++ could do this on its own.
 std::string opcodeName(RequestOpcode opcode) {
     switch (opcode) {
-        case RequestOpcode::Push:
-            return "PUSH";
-        case RequestOpcode::Pop:
-            return "POP";
-        case RequestOpcode::Insert:
-            return "INSERT";
-        case RequestOpcode::Remove:
-            return "REMOVE";
-        case RequestOpcode::Count:
-            return "COUNT";
+        case RequestOpcode::Put:
+            return "PUT";
         case RequestOpcode::Get:
             return "GET";
-        case RequestOpcode::Set:
-            return "SET";
-        case RequestOpcode::Swap:
-            return "SWAP";
+        case RequestOpcode::Delete:
+            return "DELETE";
+        case RequestOpcode::Count:
+            return "COUNT";
+        case RequestOpcode::Exists:
+            return "EXISTS";
         case RequestOpcode::Clear:
             return "CLEAR";
+        case RequestOpcode::Keys:
+            return "KEYS";
         case RequestOpcode::Quit:
             return "QUIT";
     }
