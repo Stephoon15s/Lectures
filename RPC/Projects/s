@@ -15,7 +15,9 @@ enum class ResponseOpcode to add responses for KEYS and EXISTS and also NOT_FOUN
 
 (Done)
 
-5. handleRequest, to call your new functions depending on the opcode.
+5. (DONE) handleRequest, to call your new functions depending on the opcode.
+
+(DONE)
 
 Modifying Stubs
 
