@@ -7,8 +7,8 @@ void printMenu() {
     std::cout << "\n" << std::string(60, '=') << '\n';
     std::cout << "  Remote List Menu\n";
     std::cout << std::string(60, '=') << '\n';
-    std::cout << "  1) Add strings to list (PUSH)\n";
-    std::cout << "  2) Sort list using insertion sort\n";
+    std::cout << "  1) Add Key Value Pair (PUT)\n";
+    std::cout << "  2) Print Store Values (KEYS, GET)\n";
     std::cout << "  0) Exit\n";
     std::cout << std::string(60, '=') << '\n';
 }
@@ -30,7 +30,7 @@ void displayList(RemoteKeyValueStore& list) {
         std::cout << "  [" << i << "] " << (val.has_value() ? val.value() : "[ERROR]") << '\n';
     }
 }
-
+/*
 void optionPush(RemoteKeyValueStore& list) {
     std::cout << "\n--- Option 1: Add Strings to List ---\n";
     std::cout << "Enter strings to add to the list (empty line to finish):\n";
