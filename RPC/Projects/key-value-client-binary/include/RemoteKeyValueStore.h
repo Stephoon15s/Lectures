@@ -25,14 +25,14 @@ public:
     // New Stuff
 
     // Old Stuff
-    bool push(const std::string& value);
-    std::optional<std::string> pop();
-    bool insert(std::size_t index, const std::string& value);
-    std::optional<std::string> remove(std::size_t index);
+    // bool push(const std::string& value);
+    // std::optional<std::string> pop();
+    // bool insert(std::size_t index, const std::string& value);
+    // std::optional<std::string> remove(std::size_t index);
     std::optional<std::size_t> count();
     // std::optional<std::string> get(std::size_t index);
-    bool set(std::size_t index, const std::string& value);
-    bool swap(std::size_t firstIndex, std::size_t secondIndex);
+    // bool set(std::size_t index, const std::string& value);
+    // bool swap(std::size_t firstIndex, std::size_t secondIndex);
     bool clear();
     bool isConnected() const;
     // Old Stuff

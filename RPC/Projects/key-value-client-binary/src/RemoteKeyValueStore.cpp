@@ -26,6 +26,7 @@ std::optional<std::string> RemoteKeyValueStore::sendValueCommand(RequestOpcode o
     return parseValueResponse(response.value());
 }
 
+/*
 // START HERE: to push a string into the list, we send a message with a Push opcode
 // and the string argument. Since PUSH responds with OK if the push succeeds,
 // we parse that response as a bool value and return it.
@@ -69,6 +70,7 @@ std::optional<std::string> RemoteKeyValueStore::remove(std::size_t index) {
     return sendValueCommand(RequestOpcode::Remove, arguments);
 }
 
+*/ 
 std::optional<std::size_t> RemoteKeyValueStore::count() {
     auto response = m_stub.sendRequest(RequestOpcode::Count, {});
     if (!response.has_value()) {
@@ -78,6 +80,7 @@ std::optional<std::size_t> RemoteKeyValueStore::count() {
     return parseCountResponse(response.value());
 }
 
+/*
 std::optional<std::string> RemoteKeyValueStore::get(std::size_t index) {
     if (index > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())) {
         return std::nullopt;
@@ -113,7 +116,7 @@ bool RemoteKeyValueStore::swap(std::size_t firstIndex, std::size_t secondIndex) 
     appendInt32(arguments, static_cast<std::int32_t>(secondIndex));
     return sendStatusCommand(RequestOpcode::Swap, arguments);
 }
-
+*/ 
 bool RemoteKeyValueStore::clear() {
     return sendStatusCommand(RequestOpcode::Clear);
 }

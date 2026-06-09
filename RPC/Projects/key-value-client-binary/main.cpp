@@ -12,7 +12,7 @@ void printMenu() {
     std::cout << "  0) Exit\n";
     std::cout << std::string(60, '=') << '\n';
 }
-
+/*
 void displayList(RemoteKeyValueStore& list) {
     auto cnt = list.count();
     if (!cnt.has_value()) {
@@ -117,6 +117,8 @@ void optionSortInsertionSort(RemoteKeyValueStore& list) {
     displayList(list);
 }
 
+*/
+
 int main() {
     try {
         std::cout << "\n" << std::string(60, '=') << '\n';
@@ -139,10 +141,10 @@ int main() {
                     std::cout << "\nGoodbye!\n\n";
                     break;
                 case 1:
-                    optionPush(list);
+                    // optionPush(list);
                     break;
                 case 2:
-                    optionSortInsertionSort(list);
+                    // optionSortInsertionSort(list);
                     break;
                 default:
                     std::cout << "\nInvalid choice. Please enter 0, 1, or 2.\n";
