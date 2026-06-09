@@ -1,4 +1,4 @@
-#include "RemoteList.h"
+#include "RemoteKeyValueStore.h"
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -13,7 +13,7 @@ void printMenu() {
     std::cout << std::string(60, '=') << '\n';
 }
 
-void displayList(RemoteList& list) {
+void displayList(RemoteKeyValueStore& list) {
     auto cnt = list.count();
     if (!cnt.has_value()) {
         std::cout << "  [Error getting list size]\n";
@@ -31,7 +31,7 @@ void displayList(RemoteList& list) {
     }
 }
 
-void optionPush(RemoteList& list) {
+void optionPush(RemoteKeyValueStore& list) {
     std::cout << "\n--- Option 1: Add Strings to List ---\n";
     std::cout << "Enter strings to add to the list (empty line to finish):\n";
 
@@ -61,7 +61,7 @@ void optionPush(RemoteList& list) {
     displayList(list);
 }
 
-void optionSortInsertionSort(RemoteList& list) {
+void optionSortInsertionSort(RemoteKeyValueStore& list) {
     std::cout << "\n--- Option 2: Sort List (Insertion Sort) ---\n";
 
     auto cnt = list.count();
@@ -124,7 +124,7 @@ int main() {
         std::cout << std::string(60, '=') << '\n';
         std::cout << "\nConnecting to server at 127.0.0.1:9090...\n";
 
-        RemoteList list("127.0.0.1", 9090);
+        RemoteKeyValueStore list("127.0.0.1", 9090);
         std::cout << "Connected!\n";
 
         int choice = -1;
