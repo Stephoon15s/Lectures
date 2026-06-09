@@ -69,6 +69,9 @@ std::optional<std::vector<std::string>> keys(){
     return sendValueCommand(RequestOpcode::Get, arguments);
 }
 
+// NEW COMMANDS END HERE
+
+
 // START HERE: to push a string into the list, we send a message with a Push opcode
 // and the string argument. Since PUSH responds with OK if the push succeeds,
 // we parse that response as a bool value and return it.
