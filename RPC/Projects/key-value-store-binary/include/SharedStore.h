@@ -1,6 +1,7 @@
 #pragma once
+#include <unordered_map>
 
 struct SharedStore {
-    std::vector<std::string> values{};
+    std::unordered_map<std::string, std::string> values{};
     std::mutex mutex{};
 };

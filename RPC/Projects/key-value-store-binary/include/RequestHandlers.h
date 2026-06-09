@@ -11,15 +11,13 @@
 #include "MessageReader.h"
 
 enum class RequestOpcode : std::uint8_t {
-    Push = 0x01,
-    Pop = 0x02,
-    Insert = 0x03,
-    Remove = 0x04,
-    Count = 0x05,
-    Get = 0x06,
-    Set = 0x07,
-    Swap = 0x08,
-    Clear = 0x09,
+    Put = 0x01,
+    Get = 0x02,
+    Delete = 0x03,
+    Count = 0x04,
+    Exists = 0x05, 
+    Clear = 0x06,
+    Keys = 0x07,
     Quit = 0x0A
 };
 std::vector<std::uint8_t> handlePushRequest(MessageReader& reader, SharedStore& store);

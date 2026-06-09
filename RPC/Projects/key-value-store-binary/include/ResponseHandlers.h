@@ -9,7 +9,10 @@ enum class ResponseOpcode : std::uint8_t {
     Value = 0x41,
     Count = 0x42,
     Bye = 0x43,
-    Error = 0x7F
+    Keys = 0x44,
+    Exists = 0x45,
+    Error = 0x7F,
+    Not_Found = 0x8F
 };
 
 std::vector<std::uint8_t> buildStatusResponse(ResponseOpcode opcode);

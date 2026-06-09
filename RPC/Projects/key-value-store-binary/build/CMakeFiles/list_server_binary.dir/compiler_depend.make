@@ -28,12 +28,15 @@ CMakeFiles/list_server_binary.dir/src/RequestHandlers.cpp.o: /home/falco/Project
   /usr/include/c++/13/bits/cxxabi_forced.h \
   /usr/include/c++/13/bits/cxxabi_init_exception.h \
   /usr/include/c++/13/bits/enable_special_members.h \
+  /usr/include/c++/13/bits/erase_if.h \
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
   /usr/include/c++/13/bits/functexcept.h \
   /usr/include/c++/13/bits/functional_hash.h \
   /usr/include/c++/13/bits/hash_bytes.h \
+  /usr/include/c++/13/bits/hashtable.h \
+  /usr/include/c++/13/bits/hashtable_policy.h \
   /usr/include/c++/13/bits/invoke.h \
   /usr/include/c++/13/bits/iterator_concepts.h \
   /usr/include/c++/13/bits/localefwd.h \
@@ -43,6 +46,7 @@ CMakeFiles/list_server_binary.dir/src/RequestHandlers.cpp.o: /home/falco/Project
   /usr/include/c++/13/bits/move.h \
   /usr/include/c++/13/bits/nested_exception.h \
   /usr/include/c++/13/bits/new_allocator.h \
+  /usr/include/c++/13/bits/node_handle.h \
   /usr/include/c++/13/bits/ostream_insert.h \
   /usr/include/c++/13/bits/parse_numbers.h \
   /usr/include/c++/13/bits/postypes.h \
@@ -70,6 +74,7 @@ CMakeFiles/list_server_binary.dir/src/RequestHandlers.cpp.o: /home/falco/Project
   /usr/include/c++/13/bits/string_view.tcc \
   /usr/include/c++/13/bits/stringfwd.h \
   /usr/include/c++/13/bits/unique_lock.h \
+  /usr/include/c++/13/bits/unordered_map.h \
   /usr/include/c++/13/bits/uses_allocator.h \
   /usr/include/c++/13/bits/uses_allocator_args.h \
   /usr/include/c++/13/bits/utility.h \
@@ -89,6 +94,7 @@ CMakeFiles/list_server_binary.dir/src/RequestHandlers.cpp.o: /home/falco/Project
   /usr/include/c++/13/debug/assertions.h \
   /usr/include/c++/13/debug/debug.h \
   /usr/include/c++/13/exception \
+  /usr/include/c++/13/ext/aligned_buffer.h \
   /usr/include/c++/13/ext/alloc_traits.h \
   /usr/include/c++/13/ext/atomicity.h \
   /usr/include/c++/13/ext/numeric_traits.h \
@@ -108,6 +114,7 @@ CMakeFiles/list_server_binary.dir/src/RequestHandlers.cpp.o: /home/falco/Project
   /usr/include/c++/13/tuple \
   /usr/include/c++/13/type_traits \
   /usr/include/c++/13/typeinfo \
+  /usr/include/c++/13/unordered_map \
   /usr/include/c++/13/utility \
   /usr/include/c++/13/vector \
   /usr/include/ctype.h \
@@ -289,6 +296,7 @@ CMakeFiles/list_server_binary.dir/src/ResponseHandlers.cpp.o: /home/falco/Projec
   /usr/include/c++/13/compare \
   /usr/include/c++/13/concepts \
   /usr/include/c++/13/cstddef \
+  /usr/include/c++/13/cstdint \
   /usr/include/c++/13/cstdio \
   /usr/include/c++/13/cstdlib \
   /usr/include/c++/13/cwchar \
@@ -320,6 +328,7 @@ CMakeFiles/list_server_binary.dir/src/ResponseHandlers.cpp.o: /home/falco/Projec
   /usr/include/locale.h \
   /usr/include/netinet/in.h \
   /usr/include/stdc-predef.h \
+  /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
   /usr/include/wchar.h \
@@ -347,6 +356,7 @@ CMakeFiles/list_server_binary.dir/src/ResponseHandlers.cpp.o: /home/falco/Projec
   /usr/include/x86_64-linux-gnu/bits/socket.h \
   /usr/include/x86_64-linux-gnu/bits/socket_type.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
+  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
@@ -396,7 +406,8 @@ CMakeFiles/list_server_binary.dir/src/ResponseHandlers.cpp.o: /home/falco/Projec
   /usr/include/x86_64-linux-gnu/sys/socket.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
-  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h
+  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
+  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h
 
 CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/RPC/Projects/key-value-store-binary/src/main.cpp \
   /home/falco/Projects/Lectures/RPC/Projects/key-value-store-binary/include/MessageReader.h \
@@ -432,12 +443,15 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
   /usr/include/c++/13/bits/cxxabi_forced.h \
   /usr/include/c++/13/bits/cxxabi_init_exception.h \
   /usr/include/c++/13/bits/enable_special_members.h \
+  /usr/include/c++/13/bits/erase_if.h \
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
   /usr/include/c++/13/bits/functexcept.h \
   /usr/include/c++/13/bits/functional_hash.h \
   /usr/include/c++/13/bits/hash_bytes.h \
+  /usr/include/c++/13/bits/hashtable.h \
+  /usr/include/c++/13/bits/hashtable_policy.h \
   /usr/include/c++/13/bits/invoke.h \
   /usr/include/c++/13/bits/ios_base.h \
   /usr/include/c++/13/bits/istream.tcc \
@@ -453,6 +467,7 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
   /usr/include/c++/13/bits/move.h \
   /usr/include/c++/13/bits/nested_exception.h \
   /usr/include/c++/13/bits/new_allocator.h \
+  /usr/include/c++/13/bits/node_handle.h \
   /usr/include/c++/13/bits/ostream.tcc \
   /usr/include/c++/13/bits/ostream_insert.h \
   /usr/include/c++/13/bits/parse_numbers.h \
@@ -487,6 +502,7 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
   /usr/include/c++/13/bits/this_thread_sleep.h \
   /usr/include/c++/13/bits/unique_lock.h \
   /usr/include/c++/13/bits/unique_ptr.h \
+  /usr/include/c++/13/bits/unordered_map.h \
   /usr/include/c++/13/bits/uses_allocator.h \
   /usr/include/c++/13/bits/uses_allocator_args.h \
   /usr/include/c++/13/bits/utility.h \
@@ -508,6 +524,7 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
   /usr/include/c++/13/debug/assertions.h \
   /usr/include/c++/13/debug/debug.h \
   /usr/include/c++/13/exception \
+  /usr/include/c++/13/ext/aligned_buffer.h \
   /usr/include/c++/13/ext/alloc_traits.h \
   /usr/include/c++/13/ext/atomicity.h \
   /usr/include/c++/13/ext/numeric_traits.h \
@@ -537,6 +554,7 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
   /usr/include/c++/13/tuple \
   /usr/include/c++/13/type_traits \
   /usr/include/c++/13/typeinfo \
+  /usr/include/c++/13/unordered_map \
   /usr/include/c++/13/utility \
   /usr/include/c++/13/vector \
   /usr/include/ctype.h \
@@ -713,13 +731,9 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/semaphore.h:
 
-/usr/include/string.h:
+/usr/include/linux/close_range.h:
 
-/usr/include/stdlib.h:
-
-/usr/include/wctype.h:
-
-/usr/include/sched.h:
+/usr/include/c++/13/stop_token:
 
 /usr/include/pthread.h:
 
@@ -729,19 +743,23 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/c++/13/bits/char_traits.h:
 
+/usr/include/c++/13/bits/hashtable_policy.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
 /usr/include/locale.h:
 
+/usr/include/c++/13/ext/aligned_buffer.h:
+
 /usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
-/usr/include/stdint.h:
+/usr/include/c++/13/thread:
 
-/usr/include/endian.h:
+/usr/include/c++/13/bits/max_size_type.h:
 
 /usr/include/c++/13/bits/streambuf.tcc:
 
@@ -837,11 +855,17 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/c++/13/bits/postypes.h:
 
+/usr/include/c++/13/bits/unordered_map.h:
+
 /usr/include/c++/13/bits/new_allocator.h:
 
 /usr/include/c++/13/bits/stl_uninitialized.h:
 
 /usr/include/c++/13/bits/stl_relops.h:
+
+/usr/include/c++/13/system_error:
+
+/usr/include/c++/13/compare:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
 
@@ -854,6 +878,18 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 /usr/include/c++/13/bits/functexcept.h:
 
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
+/usr/include/c++/13/bits/stl_bvector.h:
+
+/usr/include/c++/13/unordered_map:
+
+/usr/include/c++/13/bits/allocator.h:
+
+/usr/include/c++/13/bits/cxxabi_forced.h:
+
+/home/falco/Projects/Lectures/RPC/Projects/key-value-store-binary/src/main.cpp:
+
+/usr/include/c++/13/bits/concept_check.h:
 
 /usr/include/c++/13/bits/alloc_traits.h:
 
@@ -870,10 +906,6 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 /usr/include/x86_64-linux-gnu/c++/13/bits/c++locale.h:
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h:
-
-/usr/include/c++/13/bits/stl_iterator_base_types.h:
-
-/usr/include/stdio.h:
 
 /usr/include/c++/13/cerrno:
 
@@ -893,21 +925,13 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/c++/13/backward/binders.h:
 
-/usr/include/c++/13/bits/allocator.h:
-
-/usr/include/c++/13/bits/stl_bvector.h:
-
 /usr/include/c++/13/bits/atomic_wait.h:
 
 /usr/include/features.h:
 
 /usr/include/c++/13/bits/locale_facets.tcc:
 
-/usr/include/c++/13/bits/exception.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
-
-/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
+/usr/include/c++/13/bits/stl_algobase.h:
 
 /usr/include/c++/13/ext/alloc_traits.h:
 
@@ -919,19 +943,13 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /home/falco/Projects/Lectures/RPC/Projects/key-value-store-binary/include/MessageReader.h:
 
-/usr/include/strings.h:
-
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
 /home/falco/Projects/Lectures/RPC/Projects/key-value-store-binary/include/SharedStore.h:
-
-/usr/include/c++/13/bits/cxxabi_forced.h:
 
 /usr/include/c++/13/cstring:
 
-/usr/include/stdc-predef.h:
-
 /usr/include/asm-generic/posix_types.h:
+
+/usr/include/stdc-predef.h:
 
 /usr/include/c++/13/bits/refwrap.h:
 
@@ -944,8 +962,6 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 /usr/include/x86_64-linux-gnu/bits/socket_type.h:
 
 /usr/include/c++/13/bits/locale_facets.h:
-
-/usr/include/c++/13/bits/stl_algobase.h:
 
 /usr/include/alloca.h:
 
@@ -960,6 +976,10 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 /usr/include/c++/13/bits/move.h:
 
 /usr/include/asm-generic/sockios.h:
+
+/usr/include/c++/13/bits/stl_construct.h:
+
+/usr/include/c++/13/bits/std_mutex.h:
 
 /usr/include/c++/13/bits/stringfwd.h:
 
@@ -1019,6 +1039,16 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/c++/13/cstddef:
 
+/usr/include/c++/13/bits/erase_if.h:
+
+/usr/include/c++/13/bits/ostream_insert.h:
+
+/usr/include/c++/13/bits/exception.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
+
 /usr/include/c++/13/bits/memoryfwd.h:
 
 /usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
@@ -1031,8 +1061,6 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/c++/13/bits/parse_numbers.h:
 
-/usr/include/c++/13/bits/ostream_insert.h:
-
 /usr/include/linux/errno.h:
 
 /usr/include/c++/13/debug/debug.h:
@@ -1043,13 +1071,25 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
 
-/usr/include/c++/13/compare:
+/usr/include/wctype.h:
 
-/usr/include/c++/13/system_error:
+/usr/include/sched.h:
 
-/usr/include/c++/13/bits/std_mutex.h:
+/usr/include/endian.h:
 
-/usr/include/c++/13/bits/stl_construct.h:
+/usr/include/stdint.h:
+
+/usr/include/c++/13/bits/stl_iterator_base_types.h:
+
+/usr/include/stdio.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/string.h:
+
+/usr/include/strings.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
@@ -1099,9 +1139,9 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/x86_64-linux-gnu/bits/socket.h:
 
-/usr/include/x86_64-linux-gnu/asm/socket.h:
-
 /usr/include/c++/13/cwchar:
+
+/usr/include/x86_64-linux-gnu/asm/socket.h:
 
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
@@ -1139,6 +1179,8 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
+/usr/include/c++/13/bits/hashtable.h:
+
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
@@ -1146,10 +1188,6 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
-
-/usr/include/c++/13/bits/concept_check.h:
-
-/home/falco/Projects/Lectures/RPC/Projects/key-value-store-binary/src/main.cpp:
 
 /usr/include/c++/13/ext/atomicity.h:
 
@@ -1189,13 +1227,15 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h:
 
+/usr/include/c++/13/bits/node_handle.h:
+
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
 
 /usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
-/usr/include/c++/13/bits/stl_vector.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h:
+
+/usr/include/c++/13/bits/stl_vector.h:
 
 /usr/include/x86_64-linux-gnu/sys/socket.h:
 
@@ -1217,9 +1257,9 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 
 /usr/include/c++/13/bits/semaphore_base.h:
 
-/usr/include/c++/13/initializer_list:
-
 /usr/include/limits.h:
+
+/usr/include/c++/13/initializer_list:
 
 /usr/include/c++/13/bits/std_thread.h:
 
@@ -1238,11 +1278,3 @@ CMakeFiles/list_server_binary.dir/src/main.cpp.o: /home/falco/Projects/Lectures/
 /usr/include/c++/13/istream:
 
 /usr/include/c++/13/stdexcept:
-
-/usr/include/c++/13/stop_token:
-
-/usr/include/c++/13/bits/max_size_type.h:
-
-/usr/include/c++/13/thread:
-
-/usr/include/linux/close_range.h:
