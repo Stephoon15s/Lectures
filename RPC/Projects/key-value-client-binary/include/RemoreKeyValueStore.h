@@ -7,15 +7,15 @@
 
 // Abstracts a list of strings, which secretly communicates with a list-server-binary instance
 // where the real list is stored.
-class RemoteList {
+class RemoteKeyValueStore {
 public:
-    explicit RemoteList(const std::string& host = "127.0.0.1", int port = 9090);
-    ~RemoteList() = default;
+    explicit RemoteKeyValueStore(const std::string& host = "127.0.0.1", int port = 9090);
+    ~RemoteKeyValueStore() = default;
 
-    RemoteList(const RemoteList&) = delete;
-    RemoteList& operator=(const RemoteList&) = delete;
-    RemoteList(RemoteList&&) = default;
-    RemoteList& operator=(RemoteList&&) = default;
+    RemoteKeyValueStore(const RemoteKeyValueStore&) = delete;
+    RemoteKeyValueStore& operator=(const RemoteKeyValueStore&) = delete;
+    RemoteKeyValueStore(RemoteKeyValueStore&&) = default;
+    RemoteKeyValueStore& operator=(RemoteKeyValueStore&&) = default;
 
     bool push(const std::string& value);
     std::optional<std::string> pop();

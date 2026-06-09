@@ -1,13 +1,13 @@
-#include "RemoteList.h"
+#include "RemoteKeyValueStore.h"
 #include "types.h"
 
 #include <limits>
 
-RemoteList::RemoteList(const std::string& host, int port)
+RemoteKeyValueStore::RemoteKeyValueStore(const std::string& host, int port)
     : m_stub{host, port} {
 }
 
-bool RemoteList::sendStatusCommand(RequestOpcode opcode, const std::vector<std::uint8_t>& arguments) {
+bool RemoteKeyValueStore::sendStatusCommand(RequestOpcode opcode, const std::vector<std::uint8_t>& arguments) {
     auto response = m_stub.sendRequest(opcode, arguments);
     if (!response.has_value()) {
         return false;
@@ -16,7 +16,7 @@ bool RemoteList::sendStatusCommand(RequestOpcode opcode, const std::vector<std::
     return parseStatusResponse(response.value());
 }
 
-std::optional<std::string> RemoteList::sendValueCommand(RequestOpcode opcode,
+std::optional<std::string> RemoteKeyValueStore::sendValueCommand(RequestOpcode opcode,
                                                         const std::vector<std::uint8_t>& arguments) {
     auto response = m_stub.sendRequest(opcode, arguments);
     if (!response.has_value()) {
@@ -29,7 +29,7 @@ std::optional<std::string> RemoteList::sendValueCommand(RequestOpcode opcode,
 // START HERE: to push a string into the list, we send a message with a Push opcode
 // and the string argument. Since PUSH responds with OK if the push succeeds,
 // we parse that response as a bool value and return it.
-bool RemoteList::push(const std::string& value) {
+bool RemoteKeyValueStore::push(const std::string& value) {
     // Encode the bytes of the string argument, including its length.
     std::vector<std::uint8_t> arguments{};
     if (!appendString(arguments, value)) {
@@ -40,12 +40,12 @@ bool RemoteList::push(const std::string& value) {
     return sendStatusCommand(RequestOpcode::Push, arguments);
 }
 
-std::optional<std::string> RemoteList::pop() {
+std::optional<std::string> RemoteKeyValueStore::pop() {
     // Send and parse a POP command, expecting to receive back a string VALUE response.
     return sendValueCommand(RequestOpcode::Pop);
 }
 
-bool RemoteList::insert(std::size_t index, const std::string& value) {
+bool RemoteKeyValueStore::insert(std::size_t index, const std::string& value) {
     if (index > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())) {
         return false;
     }
@@ -59,7 +59,7 @@ bool RemoteList::insert(std::size_t index, const std::string& value) {
     return sendStatusCommand(RequestOpcode::Insert, arguments);
 }
 
-std::optional<std::string> RemoteList::remove(std::size_t index) {
+std::optional<std::string> RemoteKeyValueStore::remove(std::size_t index) {
     if (index > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())) {
         return std::nullopt;
     }
@@ -69,7 +69,7 @@ std::optional<std::string> RemoteList::remove(std::size_t index) {
     return sendValueCommand(RequestOpcode::Remove, arguments);
 }
 
-std::optional<std::size_t> RemoteList::count() {
+std::optional<std::size_t> RemoteKeyValueStore::count() {
     auto response = m_stub.sendRequest(RequestOpcode::Count, {});
     if (!response.has_value()) {
         return std::nullopt;
@@ -78,7 +78,7 @@ std::optional<std::size_t> RemoteList::count() {
     return parseCountResponse(response.value());
 }
 
-std::optional<std::string> RemoteList::get(std::size_t index) {
+std::optional<std::string> RemoteKeyValueStore::get(std::size_t index) {
     if (index > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())) {
         return std::nullopt;
     }
@@ -88,7 +88,7 @@ std::optional<std::string> RemoteList::get(std::size_t index) {
     return sendValueCommand(RequestOpcode::Get, arguments);
 }
 
-bool RemoteList::set(std::size_t index, const std::string& value) {
+bool RemoteKeyValueStore::set(std::size_t index, const std::string& value) {
     if (index > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())) {
         return false;
     }
@@ -102,7 +102,7 @@ bool RemoteList::set(std::size_t index, const std::string& value) {
     return sendStatusCommand(RequestOpcode::Set, arguments);
 }
 
-bool RemoteList::swap(std::size_t firstIndex, std::size_t secondIndex) {
+bool RemoteKeyValueStore::swap(std::size_t firstIndex, std::size_t secondIndex) {
     if (firstIndex > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())
         || secondIndex > static_cast<std::size_t>(std::numeric_limits<std::int32_t>::max())) {
         return false;
@@ -114,10 +114,10 @@ bool RemoteList::swap(std::size_t firstIndex, std::size_t secondIndex) {
     return sendStatusCommand(RequestOpcode::Swap, arguments);
 }
 
-bool RemoteList::clear() {
+bool RemoteKeyValueStore::clear() {
     return sendStatusCommand(RequestOpcode::Clear);
 }
 
-bool RemoteList::isConnected() const {
+bool RemoteKeyValueStore::isConnected() const {
     return m_stub.isConnected();
 }
