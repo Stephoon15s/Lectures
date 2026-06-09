@@ -8,15 +8,13 @@
 #include <vector>
 
 enum class RequestOpcode : std::uint8_t {
-    Push = 1,
-    Pop = 2,
-    Insert = 3,
-    Remove = 4,
-    Count = 5,
-    Get = 6,
-    Set = 7,
-    Swap = 8,
-    Clear = 9,
+    Put = 1,
+    Get = 2,
+    Delete = 3,
+    Count = 4,
+    Exists = 5, 
+    Clear = 6,
+    Keys = 7,
     Quit = 10
 };
 
@@ -25,7 +23,10 @@ enum class ResponseOpcode : std::uint8_t {
     Value = 65,
     Count = 66,
     Bye = 67,
-    Error = 127
+    Keys = 68,
+    Exists = 69,
+    Error = 127,
+    Not_Found = 143
 };
 
 struct BinaryResponse {
