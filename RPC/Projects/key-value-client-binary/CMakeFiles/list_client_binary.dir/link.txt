@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/list_client_binary.dir/main.cpp.o CMakeFiles/list_client_binary.dir/src/SocketUtils.cpp.o CMakeFiles/list_client_binary.dir/src/types.cpp.o CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.o CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o -o list_client_binary 

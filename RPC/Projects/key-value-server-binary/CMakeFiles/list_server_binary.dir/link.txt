@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/list_server_binary.dir/src/main.cpp.o CMakeFiles/list_server_binary.dir/src/RequestHandlers.cpp.o CMakeFiles/list_server_binary.dir/src/ResponseHandlers.cpp.o -o list_server_binary 

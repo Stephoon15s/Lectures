@@ -1,3 +1,0 @@
-/home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/CMakeFiles/list_client_binary.dir
-/home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/CMakeFiles/edit_cache.dir
-/home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/CMakeFiles/rebuild_cache.dir
