@@ -15,10 +15,25 @@ enum class ResponseOpcode to add responses for KEYS and EXISTS and also NOT_FOUN
 
 (Done)
 
-5. (DONE) handleRequest, to call your new functions depending on the opcode.
+5. (DONE)handleRequest, to call your new functions depending on the opcode.
 
 (DONE)
 
 Modifying Stubs
+
+The client application has two main menu operations, which operate on a list server via a stub object. You will rework it to have 2 similar options, but use a key-value server via a new stub object.
+
+Copy or rename & refactor the RemoteList class to form a RemoteKeyValueStore class. You can keep the RemoteListStub class the same, which only knows how to send opcodes and receive responses. But RemoveKeyValueStore needs to be reworked with hashmap-type functions instead of list functions:
+
+    bool put(const std::string& key, const std::string& value) - sends a PUT message, returns true if the response is OK
+    std::option<std::string> get(const std::string& key) - sends a GET message, returns null if NOT_FOUND is responded, or returns the string of a VALUE response.
+    bool exists(const std::string& key) - sends a EXISTS message, returns true if the response is OK, and false if NOT_FOUND.
+    std::option<std::vector<std::string>> keys() - sends a KEYS message, and returns the resulting vector of strings. 
+
+
+TO DO:
+
+- Need to set up the CPP File. H File is Done.
+
 
 Coding the Main Client

@@ -8,16 +8,15 @@
 #include <vector>
 
 enum class RequestOpcode : std::uint8_t {
-    Push = 1,
-    Pop = 2,
-    Insert = 3,
-    Remove = 4,
-    Count = 5,
-    Get = 6,
-    Set = 7,
-    Swap = 8,
-    Clear = 9,
-    Quit = 10
+    Put = 1,
+    Get = 2,
+    Delete = 3,
+    Count = 4,
+    Exists = 5,
+    Clear = 6,
+    Keys = 7,
+    Quit = 9
+    Not_Found = 9
 };
 
 enum class ResponseOpcode : std::uint8_t {

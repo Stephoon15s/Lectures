@@ -1,6 +1,8 @@
 #ifndef REMOTE_LIST_STUB_H
 #define REMOTE_LIST_STUB_H
 
+// Fine to Keep the Same
+
 #include "types.h"
 #include <optional>
 #include <string>

@@ -9,26 +9,27 @@
 // where the real list is stored.
 class RemoteKeyValueStore {
 public:
-    explicit RemoteList(const std::string& host = "127.0.0.1", int port = 9090);
-    ~RemoteList() = default;
+    explicit RemoteKeyValueStore(const std::string& host = "127.0.0.1", int port = 9090);
+    ~RemoteKeyValueStore() = default;
 
-    RemoteList(const RemoteList&) = delete;
-    RemoteList& operator=(const RemoteList&) = delete;
-    RemoteList(RemoteList&&) = default;
-    RemoteList& operator=(RemoteList&&) = default;
+    RemoteKeyValueStore(const RemoteKeyValueStore&) = delete;
+    RemoteKeyValueStore& operator=(const RemoteKeyValueStore&) = delete;
+    RemoteKeyValueStore(RemoteKeyValueStore&&) = default;
+    RemoteKeyValueStore& operator=(RemoteKeyValueStore&&) = default;
 
-    // New Stuff
-    bool put(const std::string& value);
-    std::option<std::string> get(const std::string& key);
+    // New Things
+    bool put(const std::string& key, const std::string& value);
+    std::optional<std::string> get(const std::string& key);
     bool exists(const std::string& key);
-    std::option<std::vector<std::string>> keys();
+    std::optional<std::vector<std::string>> keys();
 
-    // Old Stuff    
+    // Old Stuff
+    bool push(const std::string& value);
     std::optional<std::string> pop();
     bool insert(std::size_t index, const std::string& value);
     std::optional<std::string> remove(std::size_t index);
     std::optional<std::size_t> count();
-    std::optional<std::string> get(std::size_t index);
+    // std::optional<std::string> get(std::size_t index);
     bool set(std::size_t index, const std::string& value);
     bool swap(std::size_t firstIndex, std::size_t secondIndex);
     bool clear();
