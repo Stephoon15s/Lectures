@@ -8,7 +8,7 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
     std::optional<std::string> value{reader.readString()};
 
     if (!key.has_value() || !value.has_value() || !reader.isAtEnd()) {
-        return buildErrorResponse("PUSH requires key and value");
+        return buildErrorResponse("PUT requires key and value");
     }
     {
         std::lock_guard<std::mutex> lock{store.mutex};
@@ -73,7 +73,7 @@ std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore
     } 
     {
         std::lock_guard<std::mutex> lock{store.mutex};
-        if (store.values.count(*key) <= 0){
+        if (store.values.count(*key) == 0){
             return buildStatusResponse(ResponseOpcode::Not_Found);
         }
     }
@@ -81,9 +81,51 @@ std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore
 
 
 }
-std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store);
+
+std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store){
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("COUNT takes no arguments");
+    }
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        store.values.clear();
+    }
+    return buildStatusResponse(ResponseOpcode::Ok);
+}
+
+std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store){
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("KEYS takes no arguments");
+    }
+    
+    std::vector<std::string> keys;
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        keys.reserve(store.values.size());
+        // Stor Keys
+        for (auto const& element : store.values){
+            keys.push_back(element.first);
+        }
+        // Sort
+        std::sort(keys.begin(), keys.end(), [](const std::string& a, const std::string& b) {
+            return std::lexicographical_compare(
+                a.begin(), a.end(), b.begin(), b.end(),
+                [](const char char1, const char char2) {
+                    return std::tolower(char1) < std::tolower(char2);
+                }
+            );
+        });
+    }
+    return buildKeysResponse(keys);
+}
+
+std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store){
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("QUIT takes no arguments");
+    }
+
+    return buildStatusResponse(ResponseOpcode::Bye);
+}
 /*
 std::vector<std::uint8_t> handlePushRequest(MessageReader& reader, SharedStore& store) {
     // Push: 1 string argument.

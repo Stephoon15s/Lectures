@@ -19,4 +19,5 @@ std::vector<std::uint8_t> buildStatusResponse(ResponseOpcode opcode);
 std::vector<std::uint8_t> buildErrorResponse(const std::string& error);
 std::vector<std::uint8_t> buildValueResponse(const std::string& value);
 std::vector<std::uint8_t> buildCountResponse(std::size_t count);
+std::vector<std::uint8_t> buildKeysResponse(const std::vector<std::string>& keys);
 
