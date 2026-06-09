@@ -26,6 +26,45 @@ std::optional<std::string> RemoteKeyValueStore::sendValueCommand(RequestOpcode o
     return parseValueResponse(response.value());
 }
 
+// New Stuff
+
+bool RemoteKeyValueStore::put(const std::string& key, const std::string& value){
+    // Encode the bytes of the string argument, including its length.
+    std::vector<std::uint8_t> arguments{};
+    if (!appendString(arguments, value)) {
+        return false;
+    }
+
+    // Send and parse a PUT command, expecting to receive back an OK ("Status") response.
+    return sendStatusCommand(RequestOpcode::Put, arguments); 
+}
+
+std::optional<std::string> RemoteKeyValueStore::get(const std::string& key){
+    // Encode the bytes of the string argument, including its length.
+    std::vector<std::uint8_t> arguments{};
+    if (!appendString(arguments, key)) {
+        return std::nullopt;
+    }
+
+    // Send and parse a Get command, expecting to receive back a Value response.
+    return sendValueCommand(RequestOpcode::Get, arguments); 
+}
+
+bool RemoteKeyValueStore::exists(const std::string& key){
+    // Encode the bytes of the string argument, including its length.
+    std::vector<std::uint8_t> arguments{};
+    if (!appendString(arguments, key)) {
+        return false;
+    }
+
+    // Send and parse a PUT command, expecting to receive back an OK ("Status") response.
+    return sendStatusCommand(RequestOpcode::Exists, arguments);
+}
+//std::optional<std::vector<std::string>> RemoteKeyValueStore::keys();
+
+// New Stuff
+
+
 /*
 // START HERE: to push a string into the list, we send a message with a Push opcode
 // and the string argument. Since PUSH responds with OK if the push succeeds,
