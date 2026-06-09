@@ -12,6 +12,10 @@ void printMenu() {
     std::cout << "  0) Exit\n";
     std::cout << std::string(60, '=') << '\n';
 }
+
+void optionPrint();
+void optionPut();
+
 /*
 void displayList(RemoteKeyValueStore& list) {
     auto cnt = list.count();
