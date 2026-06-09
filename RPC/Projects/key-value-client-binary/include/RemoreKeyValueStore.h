@@ -17,16 +17,25 @@ public:
     RemoteKeyValueStore(RemoteKeyValueStore&&) = default;
     RemoteKeyValueStore& operator=(RemoteKeyValueStore&&) = default;
 
+    // New Stuff
+    bool put(const std::string& key, const std::string& value);
+    std::optional<std::string> get(const std::string& key);
+    bool exists(const std::string& key);
+    std::optional<std::vector<std::string>> keys();
+    // New Stuff
+
+    // Old Stuff
     bool push(const std::string& value);
     std::optional<std::string> pop();
     bool insert(std::size_t index, const std::string& value);
     std::optional<std::string> remove(std::size_t index);
     std::optional<std::size_t> count();
-    std::optional<std::string> get(std::size_t index);
+    // std::optional<std::string> get(std::size_t index);
     bool set(std::size_t index, const std::string& value);
     bool swap(std::size_t firstIndex, std::size_t secondIndex);
     bool clear();
     bool isConnected() const;
+    // Old Stuff
 
 private:
     RemoteListStub m_stub;
