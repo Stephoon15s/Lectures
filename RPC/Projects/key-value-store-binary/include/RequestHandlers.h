@@ -20,13 +20,11 @@ enum class RequestOpcode : std::uint8_t {
     Keys = 0x07,
     Quit = 0x0A
 };
-std::vector<std::uint8_t> handlePushRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handlePopRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleInsertRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleRemoveRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleSetRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleSwapRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store);

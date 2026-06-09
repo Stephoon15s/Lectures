@@ -2,6 +2,29 @@
 #include "ResponseHandlers.h"
 #include <utility>
 
+
+std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& store){
+    std::optional<std::string> key{reader.readString()};
+    std::optional<std::string> value{reader.readString()};
+
+    if (!key.has_value() || !value.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("PUSH requires key and value");
+
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        store.values[key] = value;
+    }
+    return buildStatusResponse(ResponseOpcode::Ok);
+}
+}
+std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store);
+/*
 std::vector<std::uint8_t> handlePushRequest(MessageReader& reader, SharedStore& store) {
     // Push: 1 string argument.
     std::optional<std::string> value{reader.readString()};
@@ -173,3 +196,5 @@ std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore&)
 
     return buildStatusResponse(ResponseOpcode::Bye);
 }
+
+*/

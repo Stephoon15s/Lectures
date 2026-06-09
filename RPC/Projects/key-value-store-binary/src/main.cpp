@@ -98,24 +98,20 @@ std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
                                         MessageReader& reader,
                                         SharedStore& store) {
     switch (opcode) {
-        case RequestOpcode::Push:
-            return handlePushRequest(reader, store);
-        case RequestOpcode::Pop:
-            return handlePopRequest(reader, store);
-        case RequestOpcode::Insert:
-            return handleInsertRequest(reader, store);
-        case RequestOpcode::Remove:
-            return handleRemoveRequest(reader, store);
-        case RequestOpcode::Count:
-            return handleCountRequest(reader, store);
+        case RequestOpcode::Put:
+            return handlePutRequest(reader, store);
         case RequestOpcode::Get:
             return handleGetRequest(reader, store);
-        case RequestOpcode::Set:
-            return handleSetRequest(reader, store);
-        case RequestOpcode::Swap:
-            return handleSwapRequest(reader, store);
+        case RequestOpcode::Delete:
+            return handleDeleteRequest(reader, store);
+        case RequestOpcode::Count:
+            return handleCountRequest(reader, store);
+        case RequestOpcode::Exists:
+            return handleExistsRequest(reader, store);
         case RequestOpcode::Clear:
             return handleClearRequest(reader, store);
+        case RequestOpcode::Keys:
+            return handleKeysRequest(reader, store);
         case RequestOpcode::Quit:
             return handleQuitRequest(reader, store);
     }
@@ -142,24 +138,20 @@ std::vector<std::uint8_t> frameResponse(const std::vector<std::uint8_t>& payload
 // Convenient debugging method. I wish C++ could do this on its own.
 std::string opcodeName(RequestOpcode opcode) {
     switch (opcode) {
-        case RequestOpcode::Push:
-            return "PUSH";
-        case RequestOpcode::Pop:
-            return "POP";
-        case RequestOpcode::Insert:
-            return "INSERT";
-        case RequestOpcode::Remove:
-            return "REMOVE";
-        case RequestOpcode::Count:
-            return "COUNT";
+        case RequestOpcode::Put:
+            return "PUT";
         case RequestOpcode::Get:
             return "GET";
-        case RequestOpcode::Set:
-            return "SET";
-        case RequestOpcode::Swap:
-            return "SWAP";
+        case RequestOpcode::Delete:
+            return "DELTETE";
+        case RequestOpcode::Count:
+            return "COUNT";
+        case RequestOpcode::Exists:
+            return "EXISTS";
         case RequestOpcode::Clear:
             return "CLEAR";
+        case RequestOpcode::Keys:
+            return "KEYS";
         case RequestOpcode::Quit:
             return "QUIT";
     }
