@@ -9,15 +9,34 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
 
     if (!key.has_value() || !value.has_value() || !reader.isAtEnd()) {
         return buildErrorResponse("PUSH requires key and value");
-
+    }
     {
         std::lock_guard<std::mutex> lock{store.mutex};
         store.values[key] = value;
     }
     return buildStatusResponse(ResponseOpcode::Ok);
+
 }
+
+std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store){
+    // Push: 1 string argument.
+    std::optional<std::string> key{reader.readString()};
+    if (!key.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("GET requires key");
+    }
+
+    std::string value{};
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        auto it{store.values.find(key)};
+        if (it == store.end()){
+            return buildStatusResponse(ResponseOpcode::Not_Found);
+        }
+        value = (it -> second);
+    }
+    return buildValueResponse(value);
 }
-std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& store);
+
 std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store);
