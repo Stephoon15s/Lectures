@@ -12,7 +12,7 @@ std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& s
     }
     {
         std::lock_guard<std::mutex> lock{store.mutex};
-        store.values[key] = value;
+        store.values[*key] = *value;
     }
     return buildStatusResponse(ResponseOpcode::Ok);
 
@@ -28,8 +28,8 @@ std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& s
     std::string value{};
     {
         std::lock_guard<std::mutex> lock{store.mutex};
-        auto it{store.values.find(key)};
-        if (it == store.end()){
+        auto it{store.values.find(*key)};
+        if (it == store.values.end()){
             return buildStatusResponse(ResponseOpcode::Not_Found);
         }
         value = (it -> second);
