@@ -53,8 +53,34 @@ std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore
     return buildStatusResponse(ResponseOpcode::Ok);
 }
 
-std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store);
-std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store){
+    if (!reader.isAtEnd()) {
+        return buildErrorResponse("COUNT takes no arguments");
+    }
+    std::size_t count{};
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        count = store.values.size();
+    }
+    return buildCountResponse(count);
+}
+
+std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store){
+    // Push: 1 string argument.
+    std::optional<std::string> key{reader.readString()};
+    if (!key.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("EXISTS requires key");
+    } 
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        if (store.values.count(*key) <= 0){
+            return buildStatusResponse(ResponseOpcode::Not_Found);
+        }
+    }
+    return buildStatusResponse(ResponseOpcode::Exists);
+
+
+}
 std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store);
