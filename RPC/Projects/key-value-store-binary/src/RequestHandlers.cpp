@@ -37,7 +37,22 @@ std::vector<std::uint8_t> handleGetRequest(MessageReader& reader, SharedStore& s
     return buildValueResponse(value);
 }
 
-std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store);
+std::vector<std::uint8_t> handleDeleteRequest(MessageReader& reader, SharedStore& store){
+    // Push: 1 string argument.
+    std::optional<std::string> key{reader.readString()};
+    if (!key.has_value() || !reader.isAtEnd()) {
+        return buildErrorResponse("DELETE requires key");
+    }
+    {
+        std::lock_guard<std::mutex> lock{store.mutex};
+        std::size_t removed{store.values.erase(*key)};
+        if (removed == 0){
+            return buildStatusResponse(ResponseOpcode::Not_Found);
+        }
+    }
+    return buildStatusResponse(ResponseOpcode::Ok);
+}
+
 std::vector<std::uint8_t> handleCountRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleExistsRequest(MessageReader& reader, SharedStore& store);
 std::vector<std::uint8_t> handleClearRequest(MessageReader& reader, SharedStore& store);
