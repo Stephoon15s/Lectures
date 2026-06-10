@@ -60,7 +60,8 @@ bool RemoteKeyValueStore::exists(const std::string& key){
     // Send and parse a PUT command, expecting to receive back an OK ("Status") response.
     return sendStatusCommand(RequestOpcode::Exists, arguments);
 }
-//std::optional<std::vector<std::string>> RemoteKeyValueStore::keys();
+std::optional<std::vector<std::string>> RemoteKeyValueStore::keys();
+// FIXME:: IMPLEMENT KEYS
 
 // New Stuff
 
