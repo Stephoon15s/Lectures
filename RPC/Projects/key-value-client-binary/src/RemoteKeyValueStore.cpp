@@ -38,13 +38,8 @@ bool RemoteKeyValueStore::put(const std::string& key, const std::string& value){
     if (!appendString(arguments, value)) {
         return false;
     }
-    std::cout << "CHECKING THE ARGUMENTS";
-    // Only Gets 1 of the Arguments.
-    for (const auto& val : arguments) {
-            std::cout << val << " ";
-    }
+    
     // Send and parse a PUT command, expecting to receive back an OK ("Status") response.
-    // Something happens at Status Command
     return sendStatusCommand(RequestOpcode::Put, arguments); 
 }
 
