@@ -14,7 +14,33 @@ void printMenu() {
 }
 
 void optionPrint();
-void optionPut();
+void optionPut(RemoteKeyValueStore& store){
+    std::cout << "\n--- Option 1: Add Key Value Pair to Store ---\n";
+    std::cout << "Enter strings to add to the list (empty line to finish):\n";
+    std::string key;
+    std::string value;
+    while (true){
+        std::cout << "  Key > "; 
+        if (!std::getline(std::cin, key)){
+            break;
+        }
+        if (key.empty()){
+            break;
+        }
+        if (!std::getline(std::cin, value)){
+            break;
+        }
+        std::cout << "  Value > "; 
+        if (value.empty()){
+            break;
+        }
+        if (store.put(key, value)){
+            std::cout << "    Added: " << key << value << '\n';
+        } else {
+            std::cout << "    Failed to push: " << key << value << '\n'; 
+        }
+    }
+}
 
 /*
 void displayList(RemoteKeyValueStore& list) {
@@ -130,7 +156,7 @@ int main() {
         std::cout << std::string(60, '=') << '\n';
         std::cout << "\nConnecting to server at 127.0.0.1:9090...\n";
 
-        RemoteKeyValueStore list("127.0.0.1", 9090);
+        RemoteKeyValueStore store("127.0.0.1", 9090);
         std::cout << "Connected!\n";
 
         int choice = -1;
@@ -146,6 +172,7 @@ int main() {
                     break;
                 case 1:
                     // optionPush(list);
+                    optionPut(store);
                     break;
                 case 2:
                     // optionSortInsertionSort(list);

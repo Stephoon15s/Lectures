@@ -1,5 +1,6 @@
 #include "RemoteKeyValueStore.h"
 #include "types.h"
+#include <iostream>
 
 #include <limits>
 
@@ -36,6 +37,7 @@ bool RemoteKeyValueStore::put(const std::string& key, const std::string& value){
     }
 
     // Send and parse a PUT command, expecting to receive back an OK ("Status") response.
+    // Something happens at Status Command
     return sendStatusCommand(RequestOpcode::Put, arguments); 
 }
 
