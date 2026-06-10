@@ -1,15 +1,23 @@
 #include "RequestHandlers.h"
 #include "ResponseHandlers.h"
 #include <utility>
+#include <iostream>
 
 
 std::vector<std::uint8_t> handlePutRequest(MessageReader& reader, SharedStore& store){
     std::optional<std::string> key{reader.readString()};
     std::optional<std::string> value{reader.readString()};
 
+    // We know it is because of Handle Put Request Error catcher.
+    // It seems like key and value don't get the thing
+    std::cout << *key;
+
     if (!key.has_value() || !value.has_value() || !reader.isAtEnd()) {
+        std::cout << "It's the error";
         return buildErrorResponse("PUT requires key and value");
     }
+    
+    std::cout << "ENTER HANDLE PUT REQUEST";
     {
         std::lock_guard<std::mutex> lock{store.mutex};
         store.values[*key] = *value;
