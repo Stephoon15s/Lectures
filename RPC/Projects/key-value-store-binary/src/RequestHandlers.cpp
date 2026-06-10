@@ -116,7 +116,7 @@ std::vector<std::uint8_t> handleKeysRequest(MessageReader& reader, SharedStore& 
             );
         });
     }
-    return buildKeysResponse(keys);
+    // 
 }
 
 std::vector<std::uint8_t> handleQuitRequest(MessageReader& reader, SharedStore& store){

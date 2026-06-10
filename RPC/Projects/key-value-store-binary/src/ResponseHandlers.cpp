@@ -53,13 +53,3 @@ std::vector<std::uint8_t> buildCountResponse(std::size_t count) {
     appendInt32(payload, static_cast<std::int32_t>(count));
     return payload;
 }
-
-// Builds a payload for a KEYS response.
-std::vector<std::uint8_t> buildKeysResponse(const std::vector<std::string>& keys){
-    std::vector<std::uint8_t> payload{static_cast<std::uint8_t>(ResponseOpcode::Keys)};
-    appendInt32(payload, static_cast<std::int32_t>(keys.size()));
-    for (const auto& k : keys) {
-        appendString(payload, k);
-    }
-    return payload;
-}
