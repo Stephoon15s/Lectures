@@ -27,10 +27,10 @@ void optionPut(RemoteKeyValueStore& store){
         if (key.empty()){
             break;
         }
+        std::cout << "  Value > "; 
         if (!std::getline(std::cin, value)){
             break;
         }
-        std::cout << "  Value > "; 
         if (value.empty()){
             break;
         }

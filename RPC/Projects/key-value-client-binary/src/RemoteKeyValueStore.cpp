@@ -32,10 +32,17 @@ std::optional<std::string> RemoteKeyValueStore::sendValueCommand(RequestOpcode o
 bool RemoteKeyValueStore::put(const std::string& key, const std::string& value){
     // Encode the bytes of the string argument, including its length.
     std::vector<std::uint8_t> arguments{};
+    if (!appendString(arguments, key)) {
+        return false;
+    }
     if (!appendString(arguments, value)) {
         return false;
     }
-
+    std::cout << "CHECKING THE ARGUMENTS";
+    // Only Gets 1 of the Arguments.
+    for (const auto& val : arguments) {
+            std::cout << val << " ";
+    }
     // Send and parse a PUT command, expecting to receive back an OK ("Status") response.
     // Something happens at Status Command
     return sendStatusCommand(RequestOpcode::Put, arguments); 
