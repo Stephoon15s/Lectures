@@ -153,29 +153,29 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-src/RemoteList.o: src/RemoteList.cpp.o
-.PHONY : src/RemoteList.o
+src/RemoteKeyValueStore.o: src/RemoteKeyValueStore.cpp.o
+.PHONY : src/RemoteKeyValueStore.o
 
 # target to build an object file
-src/RemoteList.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o
-.PHONY : src/RemoteList.cpp.o
+src/RemoteKeyValueStore.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o
+.PHONY : src/RemoteKeyValueStore.cpp.o
 
-src/RemoteList.i: src/RemoteList.cpp.i
-.PHONY : src/RemoteList.i
+src/RemoteKeyValueStore.i: src/RemoteKeyValueStore.cpp.i
+.PHONY : src/RemoteKeyValueStore.i
 
 # target to preprocess a source file
-src/RemoteList.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.i
-.PHONY : src/RemoteList.cpp.i
+src/RemoteKeyValueStore.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.i
+.PHONY : src/RemoteKeyValueStore.cpp.i
 
-src/RemoteList.s: src/RemoteList.cpp.s
-.PHONY : src/RemoteList.s
+src/RemoteKeyValueStore.s: src/RemoteKeyValueStore.cpp.s
+.PHONY : src/RemoteKeyValueStore.s
 
 # target to generate assembly for a file
-src/RemoteList.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.s
-.PHONY : src/RemoteList.cpp.s
+src/RemoteKeyValueStore.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/list_client_binary.dir/build.make CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.s
+.PHONY : src/RemoteKeyValueStore.cpp.s
 
 src/RemoteListStub.o: src/RemoteListStub.cpp.o
 .PHONY : src/RemoteListStub.o
@@ -261,9 +261,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... src/RemoteList.o"
-	@echo "... src/RemoteList.i"
-	@echo "... src/RemoteList.s"
+	@echo "... src/RemoteKeyValueStore.o"
+	@echo "... src/RemoteKeyValueStore.i"
+	@echo "... src/RemoteKeyValueStore.s"
 	@echo "... src/RemoteListStub.o"
 	@echo "... src/RemoteListStub.i"
 	@echo "... src/RemoteListStub.s"

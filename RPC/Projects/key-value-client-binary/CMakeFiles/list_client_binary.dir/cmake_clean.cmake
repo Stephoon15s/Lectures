@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/list_client_binary.dir/main.cpp.o"
   "CMakeFiles/list_client_binary.dir/main.cpp.o.d"
-  "CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o"
-  "CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o.d"
+  "CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o"
+  "CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o.d"
   "CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.o"
   "CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.o.d"
   "CMakeFiles/list_client_binary.dir/src/SocketUtils.cpp.o"

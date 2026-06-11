@@ -39,6 +39,13 @@ void optionPut(RemoteKeyValueStore& store){
         } else {
             std::cout << "    Failed to push: " << key << value << '\n'; 
         }
+        
+    }
+    auto result = store.keys();
+        std::vector<std::string> vec = result.value();
+
+        for (const auto& num : vec) {
+        std::cout << num << " ";
     }
 }
 

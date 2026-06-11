@@ -125,19 +125,19 @@ CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteListStub.cpp -o CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.s
 
-CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o: CMakeFiles/list_client_binary.dir/flags.make
-CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o: src/RemoteList.cpp
-CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o: CMakeFiles/list_client_binary.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o -MF CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o.d -o CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o -c /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteList.cpp
+CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o: CMakeFiles/list_client_binary.dir/flags.make
+CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o: src/RemoteKeyValueStore.cpp
+CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o: CMakeFiles/list_client_binary.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o -MF CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o.d -o CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o -c /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteKeyValueStore.cpp
 
-CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteList.cpp > CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.i
+CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteKeyValueStore.cpp > CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.i
 
-CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteList.cpp -o CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.s
+CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/src/RemoteKeyValueStore.cpp -o CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.s
 
 # Object files for target list_client_binary
 list_client_binary_OBJECTS = \
@@ -145,7 +145,7 @@ list_client_binary_OBJECTS = \
 "CMakeFiles/list_client_binary.dir/src/SocketUtils.cpp.o" \
 "CMakeFiles/list_client_binary.dir/src/types.cpp.o" \
 "CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.o" \
-"CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o"
+"CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o"
 
 # External object files for target list_client_binary
 list_client_binary_EXTERNAL_OBJECTS =
@@ -154,7 +154,7 @@ list_client_binary: CMakeFiles/list_client_binary.dir/main.cpp.o
 list_client_binary: CMakeFiles/list_client_binary.dir/src/SocketUtils.cpp.o
 list_client_binary: CMakeFiles/list_client_binary.dir/src/types.cpp.o
 list_client_binary: CMakeFiles/list_client_binary.dir/src/RemoteListStub.cpp.o
-list_client_binary: CMakeFiles/list_client_binary.dir/src/RemoteList.cpp.o
+list_client_binary: CMakeFiles/list_client_binary.dir/src/RemoteKeyValueStore.cpp.o
 list_client_binary: CMakeFiles/list_client_binary.dir/build.make
 list_client_binary: CMakeFiles/list_client_binary.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/falco/Projects/Lectures/RPC/Projects/key-value-client-binary/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable list_client_binary"

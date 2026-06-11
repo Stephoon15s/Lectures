@@ -43,5 +43,7 @@ private:
     bool sendStatusCommand(RequestOpcode opcode, const std::vector<std::uint8_t>& arguments = {});
     std::optional<std::string> sendValueCommand(RequestOpcode opcode,
                                                 const std::vector<std::uint8_t>& arguments = {});
+    std::optional<std::vector<std::string>> sendKeysCommand(RequestOpcode opcode,
+                                                        const std::vector<std::uint8_t>& arguments = {});
 };
 

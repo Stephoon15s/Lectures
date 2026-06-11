@@ -126,6 +126,38 @@ std::optional<std::size_t> parseCountResponse(const BinaryResponse& response) {
     return static_cast<std::size_t>(count.value());
 }
 
+std::optional<std::vector<std::string>> parseKeysResponse(const BinaryResponse& response){
+    if (response.opcode != ResponseOpcode::Keys) {
+        return std::nullopt;
+    }
+    MessageReader reader{response.payload};
+
+    auto count = reader.readInt32();
+    if (!count.has_value() || count.value() < 0) {
+        return std::nullopt;
+    }
+
+    std::vector<std::string> keys;
+    keys.reserve(static_cast<std::size_t>(count.value()));
+
+    
+    for (std::int32_t i = 0; i < count.value(); ++i) {
+        auto key = reader.readString();
+
+        if (!key.has_value()) {
+            return std::nullopt;
+        }
+
+        keys.push_back(std::move(*key));
+    }
+
+    if (!reader.isAtEnd()) {
+        return std::nullopt;
+    }
+
+    return keys;
+}
+
 bool isErrorResponse(const BinaryResponse& response) {
     return response.opcode == ResponseOpcode::Error;
 }

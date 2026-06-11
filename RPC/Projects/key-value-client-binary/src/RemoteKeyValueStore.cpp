@@ -29,6 +29,17 @@ std::optional<std::string> RemoteKeyValueStore::sendValueCommand(RequestOpcode o
 
 // New Stuff
 
+std::optional<std::vector<std::string>> RemoteKeyValueStore::sendKeysCommand(RequestOpcode opcode, 
+        const std::vector<std::uint8_t>& arguments){
+
+    auto response = m_stub.sendRequest(opcode, arguments);
+    if (!response.has_value()) {
+        return std::nullopt;
+    }
+
+    return parseKeysResponse(response.value());
+}
+
 bool RemoteKeyValueStore::put(const std::string& key, const std::string& value){
     // Encode the bytes of the string argument, including its length.
     std::vector<std::uint8_t> arguments{};
@@ -65,7 +76,9 @@ bool RemoteKeyValueStore::exists(const std::string& key){
     return sendStatusCommand(RequestOpcode::Exists, arguments);
 }
 
-// std::optional<std::vector<std::string>> RemoteKeyValueStore::keys();
+std::optional<std::vector<std::string>> RemoteKeyValueStore::keys(){
+    return sendKeysCommand(RequestOpcode::Keys, {});
+}
 // FIXME:: IMPLEMENT KEYS
 
 // New Stuff

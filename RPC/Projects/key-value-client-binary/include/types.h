@@ -43,6 +43,8 @@ std::optional<BinaryResponse> parseResponseMessage(const std::vector<std::uint8_
 bool parseStatusResponse(const BinaryResponse& response);
 std::optional<std::string> parseValueResponse(const BinaryResponse& response);
 std::optional<std::size_t> parseCountResponse(const BinaryResponse& response);
+std::optional<std::vector<std::string>> parseKeysResponse(const BinaryResponse& response);
+
 bool isErrorResponse(const BinaryResponse& response);
 std::string getErrorMessage(const BinaryResponse& response);
 
