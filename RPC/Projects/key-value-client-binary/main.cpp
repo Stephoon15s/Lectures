@@ -13,7 +13,17 @@ void printMenu() {
     std::cout << std::string(60, '=') << '\n';
 }
 
-void optionPrint();
+void optionPrint(RemoteKeyValueStore& store){
+    std::cout << "\n--- Option 2: Print all Values in Store ---\n";
+    auto result = store.keys();
+    std::vector<std::string> vec = result.value();
+    std::cout << "Key : Value \n";
+    for (const auto& v_key : vec) {
+
+        std::cout << v_key << ": "<<store.get(v_key).value() << "\n";
+    }
+}
+
 void optionPut(RemoteKeyValueStore& store){
     std::cout << "\n--- Option 1: Add Key Value Pair to Store ---\n";
     std::cout << "Enter strings to add to the list (empty line to finish):\n";
@@ -35,17 +45,19 @@ void optionPut(RemoteKeyValueStore& store){
             break;
         }
         if (store.put(key, value)){
-            std::cout << "    Added: " << key << << " : " << value << '\n';
+            std::cout << "    Added: " << key << " : " << value << '\n';
         } else {
             std::cout << "    Failed to push: " << key << " : " <<value << '\n'; 
         }
         
     }
+    // Print All Keys in Store
     auto result = store.keys();
     std::vector<std::string> vec = result.value();
 
-    for (const auto& num : vec) {
-        std::cout << num << " ";
+    std::cout<< "ALL KEYS:\n";
+    for (const auto& v_key : vec) {
+        std::cout << v_key << "\n";
     }
 }
 
@@ -183,6 +195,7 @@ int main() {
                     break;
                 case 2:
                     // optionSortInsertionSort(list);
+                    optionPrint(store);
                     break;
                 default:
                     std::cout << "\nInvalid choice. Please enter 0, 1, or 2.\n";
