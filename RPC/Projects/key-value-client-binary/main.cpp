@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 void printMenu() {
     std::cout << "\n" << std::string(60, '=') << '\n';
@@ -17,10 +18,30 @@ void optionPrint(RemoteKeyValueStore& store){
     std::cout << "\n--- Option 2: Print all Values in Store ---\n";
     auto result = store.keys();
     std::vector<std::string> vec = result.value();
-    std::cout << "Key : Value \n";
-    for (const auto& v_key : vec) {
 
-        std::cout << v_key << ": "<<store.get(v_key).value() << "\n";
+    // Get the Size and make the List
+    std::vector<std::string> values;
+    values.reserve(vec.size());
+
+    // Go through vector and append values to the list.
+    for (const auto& key : vec) {
+        values.push_back(store.get(key).value());
+    }
+
+    // Sort List
+    std::sort(values.begin(), values.end(), [](const std::string& a, const std::string& b) {
+            return std::lexicographical_compare(
+                a.begin(), a.end(), b.begin(), b.end(),
+                [](const char char1, const char char2) {
+                    return std::tolower(char1) < std::tolower(char2);
+                }
+            );
+        });
+    // Go through list and print
+    // std::cout << "Key : Value \n";
+    for (const auto& val : values) {
+
+        std::cout << val << "\n";
     }
 }
 
