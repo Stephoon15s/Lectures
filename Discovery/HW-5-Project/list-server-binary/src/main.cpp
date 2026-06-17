@@ -438,7 +438,7 @@ int main(int argc, char* argv[]) {
     // Check if Thread was made
     if (heartThread.joinable()){
         // It worked
-        continue;
+        std::cout << "Thread is made\n";
     }else{
         // It failed
         closeSocket(serverFd);
