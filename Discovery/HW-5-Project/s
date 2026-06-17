@@ -1,0 +1,6 @@
+- Compile: Start Name Server, 
+Start List Server, 
+Client doesn't seem necessary.
+
+The third part of the assignemnt is meant to simulate a slower Server
+and show that it will dies.
