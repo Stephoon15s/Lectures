@@ -1,0 +1,3 @@
+/home/falco/Projects/Lectures/Discovery/list-server-binary/build/CMakeFiles/list_server_binary.dir
+/home/falco/Projects/Lectures/Discovery/list-server-binary/build/CMakeFiles/edit_cache.dir
+/home/falco/Projects/Lectures/Discovery/list-server-binary/build/CMakeFiles/rebuild_cache.dir

@@ -2,3 +2,11 @@ Compile: Start Name Server, Start List Server, Client doesn't seem necessary.
 
 The third part of the assignemnt is meant to simulate a slower Server
 and show that it will dies if the heartbeat is too fast.
+
+Task List:
+- in Main List-Server-Binary: Make new thread and have it run rgister with name server. Don't detach.
+    - In this this thread, after finishing the register stuff, having it enter a new loop that will send out a heartbeat.
+    Modify Register to do this. Thread sends a heartbeat request.
+
+- Build Hearbeat Request is in Name Server Handler.
+./list_server_binary 127.0.0.1 9091
