@@ -1,26 +1,26 @@
+#include "MessageReader.h"
 #include "RequestHandlers.h"
 #include "ResponseHandlers.h"
-#include "SharedStore.h"
-#include "MessageReader.h"
+#include "SharedRegistry.h"
 
 #include <arpa/inet.h>
+#include <atomic>
 #include <cerrno>
 #include <cstdlib>
+#include <cstring>
+#include <functional>
 #include <iostream>
-#include <limits>
 #include <netinet/in.h>
 #include <optional>
 #include <string>
 #include <sys/socket.h>
 #include <thread>
 #include <unistd.h>
-#include <utility>
 #include <vector>
 
 std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
                                         MessageReader& reader,
-                                        SharedStore& store);
-
+                                        SharedRegistry& registry);
 
 void closeSocket(int fd) {
     if (fd >= 0) {
@@ -44,15 +44,10 @@ bool sendAll(int fd, const std::vector<std::uint8_t>& message) {
     return true;
 }
 
-// Reads exactly "byteCount" bytes from the given socket descriptor, and writes them
-// to the given buffer.
 bool readExact(int fd, void* buffer, std::size_t byteCount) {
-    // Cast the buffer to a char* so we can store one byte at a time.
     auto* out{reinterpret_cast<char*>(buffer)};
     std::size_t totalRead{0};
 
-    // Keep reading into the buffer (via the "out" pointer) until we have
-    // received the expected number of bytes.
     while (totalRead < byteCount) {
         ssize_t bytesRead{recv(fd, out + totalRead, byteCount - totalRead, 0)};
         if (bytesRead <= 0) {
@@ -65,25 +60,17 @@ bool readExact(int fd, void* buffer, std::size_t byteCount) {
     return true;
 }
 
-// The application protocol for this server defines a message as being a sequence of
-// at least 5 bytes:
-// byte 0-3: the number of bytes in the message payload, which follows the first 4 bytes.
-// byte 4:   a 1-byte opcode.
-// byte 5+:  optional arguments appropriate to the opcode.
-// This function returns the payload of a message received on the given socket.
 std::optional<std::vector<std::uint8_t>> readMessage(int fd) {
-    // Read the payload length.
     std::uint32_t networkLength{};
     if (!readExact(fd, &networkLength, sizeof(networkLength))) {
         return std::nullopt;
     }
-    // Convert length from network order to local host order.
+
     const std::uint32_t length{ntohl(networkLength)};
     if (length == 0) {
         return std::nullopt;
     }
 
-    // Copy "length" bytes from the socket into this vector of bytes.
     std::vector<std::uint8_t> payload(length);
     if (!readExact(fd, payload.data(), payload.size())) {
         return std::nullopt;
@@ -92,75 +79,46 @@ std::optional<std::vector<std::uint8_t>> readMessage(int fd) {
     return payload;
 }
 
-// Handles the given opcode request, validating arguments from the given
-// MessageReader, and mutating the given SharedStore. Returns a binary message
-// payload to respond to the client.
 std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
                                         MessageReader& reader,
-                                        SharedStore& store) {
+                                        SharedRegistry& registry) {
     switch (opcode) {
-        case RequestOpcode::Push:
-            return handlePushRequest(reader, store);
-        case RequestOpcode::Pop:
-            return handlePopRequest(reader, store);
-        case RequestOpcode::Insert:
-            return handleInsertRequest(reader, store);
-        case RequestOpcode::Remove:
-            return handleRemoveRequest(reader, store);
-        case RequestOpcode::Count:
-            return handleCountRequest(reader, store);
-        case RequestOpcode::Get:
-            return handleGetRequest(reader, store);
-        case RequestOpcode::Set:
-            return handleSetRequest(reader, store);
-        case RequestOpcode::Swap:
-            return handleSwapRequest(reader, store);
-        case RequestOpcode::Clear:
-            return handleClearRequest(reader, store);
+        case RequestOpcode::Register:
+            return handleRegisterRequest(reader, registry);
+        case RequestOpcode::Unregister:
+            return handleUnregisterRequest(reader, registry);
+        case RequestOpcode::Heartbeat:
+            return handleHeartbeatRequest(reader, registry);
+        case RequestOpcode::Resolve:
+            return handleResolveRequest(reader, registry);
         case RequestOpcode::Quit:
-            return handleQuitRequest(reader, store);
+            return handleQuitRequest(reader, registry);
     }
 
     return buildErrorResponse("unknown opcode");
 }
 
-// Frame a payload of bytes as a network message, prefixed with the payload's length
 std::vector<std::uint8_t> frameResponse(const std::vector<std::uint8_t>& payload) {
     std::vector<std::uint8_t> framed{};
-    // Reserve enough space in the new buffer.
     framed.reserve(sizeof(std::uint32_t) + payload.size());
 
-    // Encode the length of the payload.
     const std::uint32_t networkLength{htonl(static_cast<std::uint32_t>(payload.size()))};
     const auto* lengthBytes{reinterpret_cast<const std::uint8_t*>(&networkLength)};
-    // Copy the length to the buffer.
     framed.insert(framed.end(), lengthBytes, lengthBytes + sizeof(networkLength));
-    // Copy the payload to the buffer.
     framed.insert(framed.end(), payload.begin(), payload.end());
     return framed;
 }
 
-// Convenient debugging method. I wish C++ could do this on its own.
 std::string opcodeName(RequestOpcode opcode) {
     switch (opcode) {
-        case RequestOpcode::Push:
-            return "PUSH";
-        case RequestOpcode::Pop:
-            return "POP";
-        case RequestOpcode::Insert:
-            return "INSERT";
-        case RequestOpcode::Remove:
-            return "REMOVE";
-        case RequestOpcode::Count:
-            return "COUNT";
-        case RequestOpcode::Get:
-            return "GET";
-        case RequestOpcode::Set:
-            return "SET";
-        case RequestOpcode::Swap:
-            return "SWAP";
-        case RequestOpcode::Clear:
-            return "CLEAR";
+        case RequestOpcode::Register:
+            return "REGISTER";
+        case RequestOpcode::Unregister:
+            return "UNREGISTER";
+        case RequestOpcode::Heartbeat:
+            return "HEARTBEAT";
+        case RequestOpcode::Resolve:
+            return "RESOLVE";
         case RequestOpcode::Quit:
             return "QUIT";
     }
@@ -168,35 +126,57 @@ std::string opcodeName(RequestOpcode opcode) {
     return "UNKNOWN";
 }
 
-void handleClient(int clientFd, SharedStore& store) {
+void handleClient(int clientFd, std::int32_t clientId, SharedRegistry& registry) {
+    std::int32_t lastMessage{0};
+    std::vector<std::uint8_t> lastResponsePayload{};
+
+    if (!sendAll(clientFd, frameResponse(buildClientIdResponse(clientId)))) {
+        closeSocket(clientFd);
+        return;
+    }
+
     while (true) {
-        // Read a message from the client,
-        // to receive back a buffer of bytes from the message payload.
-        // uint8_t. U means unsigned. 8 means 8 bytes
         std::optional<std::vector<std::uint8_t>> payload{readMessage(clientFd)};
-        if (!payload.has_value()) {
-            std::cout << "Client disconnected\n";
+        if (!payload.has_value() || payload->empty()) {
             break;
         }
 
-        if (payload->empty()) {
-            std::cout << "Received empty payload\n";
-            break;
-        }
         MessageReader reader{payload.value(), 0};
-        // Retrieve the opcode from the payload.
-        const auto opcodeValue{reader.readByte()};
-        const auto opcode{static_cast<RequestOpcode>(opcodeValue.value())};
+        std::optional<std::int32_t> requestClientId{reader.readInt32()};
+        std::optional<std::int32_t> messageId{reader.readInt32()};
+        if (!requestClientId.has_value() || !messageId.has_value()) {
+            sendAll(clientFd, frameResponse(buildErrorResponse("missing clientId or messageId")));
+            break;
+        }
 
-        std::vector<std::uint8_t> response{handleRequest(opcode, reader, store)};
+        if (requestClientId.value() != clientId) {
+            sendAll(clientFd, frameResponse(buildErrorResponse("invalid clientId")));
+            break;
+        }
+
+        if (lastMessage == messageId.value()) {
+            sendAll(clientFd, frameResponse(lastResponsePayload));
+            continue;
+        }
+
+        std::optional<std::uint8_t> opcodeValue{reader.readByte()};
+        if (!opcodeValue.has_value()) {
+            sendAll(clientFd, frameResponse(buildErrorResponse("missing opcode")));
+            break;
+        }
+
+        const auto opcode{static_cast<RequestOpcode>(opcodeValue.value())};
+        std::vector<std::uint8_t> response{handleRequest(opcode, reader, registry)};
 
         std::cout << "request opcode: " << opcodeName(opcode)
                   << " (" << static_cast<int>(opcodeValue.value()) << ")\n";
 
         if (!sendAll(clientFd, frameResponse(response))) {
-            std::cout << "Failed to send response\n";
             break;
         }
+
+        lastMessage = messageId.value();
+        lastResponsePayload = response;
 
         if (!response.empty() && response.front() == static_cast<std::uint8_t>(ResponseOpcode::Bye)) {
             break;
@@ -242,14 +222,14 @@ int createServerSocket(int port) {
 }
 
 int main() {
-    constexpr int PORT{9090};
+    constexpr int PORT{9091};
+    static std::atomic<std::int32_t> nextClientId{1};
 
     int serverFd{createServerSocket(PORT)};
-    SharedStore store{};
+    SharedRegistry registry{};
 
-    std::cout << "Binary list server listening on port " << PORT << '\n';
+    std::cout << "Name server listening on port " << PORT << '\n';
 
-    // As before, accept a connection on the socket, then spawn a thread to handle the client.
     while (true) {
         sockaddr_in clientAddr{};
         socklen_t clientLen{sizeof(clientAddr)};
@@ -272,7 +252,8 @@ int main() {
                   << ntohs(clientAddr.sin_port)
                   << '\n';
 
-        std::thread clientThread{handleClient, clientFd, std::ref(store)};
+        const std::int32_t clientId{nextClientId.fetch_add(1)};
+        std::thread clientThread{handleClient, clientFd, clientId, std::ref(registry)};
         clientThread.detach();
     }
 

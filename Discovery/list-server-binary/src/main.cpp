@@ -2,31 +2,182 @@
 #include "ResponseHandlers.h"
 #include "SharedStore.h"
 #include "MessageReader.h"
+#include "Messaging.h"
 
 #include <arpa/inet.h>
 #include <cerrno>
 #include <cstdlib>
 #include <iostream>
-#include <limits>
 #include <netinet/in.h>
+#include <functional>
 #include <optional>
 #include <string>
 #include <sys/socket.h>
 #include <thread>
 #include <unistd.h>
-#include <utility>
+#include <atomic>
+#include <system_error>
+#include <charconv>
 #include <vector>
 
-std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
-                                        MessageReader& reader,
-                                        SharedStore& store);
+#include "NameServerHandlers.h"
 
-
+std::optional<std::vector<std::uint8_t>> readMessage(int fd);
+bool sendAll(int fd, const std::vector<std::uint8_t>& message);
 void closeSocket(int fd) {
     if (fd >= 0) {
         close(fd);
     }
 }
+
+int connectToServer(const std::string& host, int port) {
+    int fd{socket(AF_INET, SOCK_STREAM, 0)};
+    if (fd < 0) {
+        return -1;
+    }
+
+    sockaddr_in serverAddr{};
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(static_cast<uint16_t>(port));
+
+    if (inet_pton(AF_INET, host.c_str(), &serverAddr.sin_addr) <= 0) {
+        closeSocket(fd);
+        return -1;
+    }
+
+    if (connect(fd, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr)) < 0) {
+        closeSocket(fd);
+        return -1;
+    }
+
+    return fd;
+}
+
+std::optional<std::string> getLocalIpAddress(int fd) {
+    sockaddr_in localAddr{};
+    socklen_t localAddrLen{sizeof(localAddr)};
+    if (getsockname(fd, reinterpret_cast<sockaddr*>(&localAddr), &localAddrLen) < 0) {
+        return std::nullopt;
+    }
+
+    char addressBuffer[INET_ADDRSTRLEN]{};
+    if (inet_ntop(AF_INET, &localAddr.sin_addr, addressBuffer, sizeof(addressBuffer)) == nullptr) {
+        return std::nullopt;
+    }
+
+    return std::string{addressBuffer};
+}
+
+bool parsePort(const char* text, int& port) {
+    if (text == nullptr) {
+        return false;
+    }
+
+    int parsedPort{};
+    const char* end{text + std::strlen(text)};
+    auto [ptr, error]{std::from_chars(text, end, parsedPort)};
+    if (error != std::errc{} || ptr != end || parsedPort <= 0 || parsedPort > 65535) {
+        return false;
+    }
+
+    port = parsedPort;
+    return true;
+}
+
+bool registerWithNameServer(const std::string& nameServerHost,
+                            int nameServerPort,
+                            const std::string& serviceName,
+                            const std::string& providerId,
+                            int servicePort) {
+    int fd{connectToServer(nameServerHost, nameServerPort)};
+    if (fd < 0) {
+        std::cerr << "Failed to connect to name server at "
+                  << nameServerHost
+                  << ':'
+                  << nameServerPort
+                  << '\n';
+        return false;
+    }
+
+    std::optional<std::string> localIp{getLocalIpAddress(fd)};
+    if (!localIp.has_value()) {
+        std::cerr << "Failed to determine local service address for registration\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    std::optional<std::vector<std::uint8_t>> handshakeMessage{readMessage(fd)};
+    if (!handshakeMessage.has_value()) {
+        std::cerr << "Failed to receive name server handshake\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    MessageReader handshakeReader{handshakeMessage.value(), 0};
+    const auto opcodeValue{handshakeReader.readByte()};
+    if (!opcodeValue.has_value()) {
+        std::cerr << "Name server handshake response missing opcode\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    const auto opcode{static_cast<NameServerResponseOpcode>(opcodeValue.value())};
+    if (opcode != NameServerResponseOpcode::ClientId) {
+        std::cerr << "Invalid name server handshake response\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    std::optional<std::int32_t> clientId{handshakeReader.readInt32()};
+    if (!clientId.has_value() || !handshakeReader.isAtEnd()) {
+        std::cerr << "Malformed client ID from name server\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    const std::vector<std::uint8_t> registerPayload{
+        buildRegisterRequest(serviceName, providerId, localIp.value(), servicePort)
+    };
+    if (!sendAll(fd, frameSuppressibleMessage(clientId.value(), 1, registerPayload))) {
+        std::cerr << "Failed to send registration request to name server\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    std::optional<std::vector<std::uint8_t>> responseMessage{readMessage(fd)};
+    if (!responseMessage.has_value()) {
+        std::cerr << "Failed to receive registration response from name server\n";
+        closeSocket(fd);
+        return false;
+    }
+    MessageReader registerReader{responseMessage.value(), 0};
+    const auto registerOpcodeValue{registerReader.readByte()};
+    if (!registerOpcodeValue.has_value()) {
+        std::cerr << "Registration response missing opcode\n";
+        closeSocket(fd);
+        return false;
+    }
+
+    const auto registerOpcode{static_cast<NameServerResponseOpcode>(registerOpcodeValue.value())};
+    if (registerOpcode == NameServerResponseOpcode::Ok) {
+        closeSocket(fd);
+        return true;
+    }
+
+    if (registerOpcode == NameServerResponseOpcode::Error) {
+        std::optional<std::string> errorMessage{registerReader.readString()};
+        std::cerr << "Name server rejected registration: "
+                  << (errorMessage.has_value() ? errorMessage.value() : "unknown error")
+                  << '\n';
+        closeSocket(fd);
+        return false;
+    }
+
+    std::cerr << "Unexpected registration response from name server\n";
+    closeSocket(fd);
+    return false;
+}
+
 
 bool sendAll(int fd, const std::vector<std::uint8_t>& message) {
     const auto* data{reinterpret_cast<const char*>(message.data())};
@@ -124,21 +275,6 @@ std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
     return buildErrorResponse("unknown opcode");
 }
 
-// Frame a payload of bytes as a network message, prefixed with the payload's length
-std::vector<std::uint8_t> frameResponse(const std::vector<std::uint8_t>& payload) {
-    std::vector<std::uint8_t> framed{};
-    // Reserve enough space in the new buffer.
-    framed.reserve(sizeof(std::uint32_t) + payload.size());
-
-    // Encode the length of the payload.
-    const std::uint32_t networkLength{htonl(static_cast<std::uint32_t>(payload.size()))};
-    const auto* lengthBytes{reinterpret_cast<const std::uint8_t*>(&networkLength)};
-    // Copy the length to the buffer.
-    framed.insert(framed.end(), lengthBytes, lengthBytes + sizeof(networkLength));
-    // Copy the payload to the buffer.
-    framed.insert(framed.end(), payload.begin(), payload.end());
-    return framed;
-}
 
 // Convenient debugging method. I wish C++ could do this on its own.
 std::string opcodeName(RequestOpcode opcode) {
@@ -168,11 +304,18 @@ std::string opcodeName(RequestOpcode opcode) {
     return "UNKNOWN";
 }
 
-void handleClient(int clientFd, SharedStore& store) {
+void handleClient(int clientFd, std::int32_t clientId, SharedStore& store) {
+    std::int32_t lastMessage{0};
+    std::vector<std::uint8_t> lastResponsePayload;
+
+    if (!sendAll(clientFd, frameResponseMessage(buildClientIdResponse(clientId)))) {
+        closeSocket(clientFd);
+        return;
+    }
+
     while (true) {
         // Read a message from the client,
         // to receive back a buffer of bytes from the message payload.
-        // uint8_t. U means unsigned. 8 means 8 bytes
         std::optional<std::vector<std::uint8_t>> payload{readMessage(clientFd)};
         if (!payload.has_value()) {
             std::cout << "Client disconnected\n";
@@ -184,8 +327,31 @@ void handleClient(int clientFd, SharedStore& store) {
             break;
         }
         MessageReader reader{payload.value(), 0};
+        // Ignore the clientId for now, because one thread handles one client.
+        std::optional<std::int32_t> requestClientId{reader.readInt32()};
+        std::optional<std::int32_t> messageId{reader.readInt32()};
+        if (!requestClientId.has_value() || !messageId.has_value()) {
+            sendAll(clientFd, frameResponseMessage(buildErrorResponse("missing clientId or messageId")));
+            break;
+        }
+
+        if (requestClientId.value() != clientId) {
+            sendAll(clientFd, frameResponseMessage(buildErrorResponse("invalid clientId")));
+            break;
+        }
+
+        if (lastMessage == messageId.value()) {
+            sendAll(clientFd, frameResponseMessage(lastResponsePayload));
+            continue;
+        }
+
+
         // Retrieve the opcode from the payload.
         const auto opcodeValue{reader.readByte()};
+        if (!opcodeValue.has_value()) {
+            sendAll(clientFd, frameResponseMessage(buildErrorResponse("missing opcode")));
+            break;
+        }
         const auto opcode{static_cast<RequestOpcode>(opcodeValue.value())};
 
         std::vector<std::uint8_t> response{handleRequest(opcode, reader, store)};
@@ -193,10 +359,12 @@ void handleClient(int clientFd, SharedStore& store) {
         std::cout << "request opcode: " << opcodeName(opcode)
                   << " (" << static_cast<int>(opcodeValue.value()) << ")\n";
 
-        if (!sendAll(clientFd, frameResponse(response))) {
+        if (!sendAll(clientFd, frameResponseMessage(response))) {
             std::cout << "Failed to send response\n";
             break;
         }
+        lastMessage = messageId.value();
+        lastResponsePayload = response;
 
         if (!response.empty() && response.front() == static_cast<std::uint8_t>(ResponseOpcode::Bye)) {
             break;
@@ -241,13 +409,36 @@ int createServerSocket(int port) {
     return serverFd;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     constexpr int PORT{9090};
+    constexpr const char* SERVICE_NAME{"list-service"};
+    static std::atomic<std::int32_t> nextClientId{1};
+
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <name-server-host> <name-server-port>\n";
+        return 1;
+    }
+
+    int nameServerPort{};
+    if (!parsePort(argv[2], nameServerPort)) {
+        std::cerr << "Invalid name server port: " << argv[2] << '\n';
+        return 1;
+    }
+
+    const std::string providerId{
+        std::string{SERVICE_NAME} + "-" + std::to_string(static_cast<long long>(getpid()))
+    };
 
     int serverFd{createServerSocket(PORT)};
     SharedStore store{};
 
+    if (!registerWithNameServer(argv[1], nameServerPort, SERVICE_NAME, providerId, PORT)) {
+        closeSocket(serverFd);
+        return 1;
+    }
+
     std::cout << "Binary list server listening on port " << PORT << '\n';
+    std::cout << "Registered with name server at " << argv[1] << ':' << nameServerPort << '\n';
 
     // As before, accept a connection on the socket, then spawn a thread to handle the client.
     while (true) {
@@ -272,7 +463,8 @@ int main() {
                   << ntohs(clientAddr.sin_port)
                   << '\n';
 
-        std::thread clientThread{handleClient, clientFd, std::ref(store)};
+        const std::int32_t clientId{nextClientId.fetch_add(1)};
+        std::thread clientThread{handleClient, clientFd, clientId, std::ref(store)};
         clientThread.detach();
     }
 
