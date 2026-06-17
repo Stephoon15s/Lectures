@@ -432,10 +432,24 @@ int main(int argc, char* argv[]) {
     int serverFd{createServerSocket(PORT)};
     SharedStore store{};
 
+    // Make Thread Here
+    std::thread heartThread{registerWithNameServer, argv[1], nameServerPort, SERVICE_NAME, providerId, PORT};
+
+    // Check if Thread was made
+    if (heartThread.joinable()){
+        // It worked
+        continue;
+    }else{
+        // It failed
+        closeSocket(serverFd);
+        return 1;
+    }
+    /*
     if (!registerWithNameServer(argv[1], nameServerPort, SERVICE_NAME, providerId, PORT)) {
         closeSocket(serverFd);
         return 1;
     }
+    */
 
     std::cout << "Binary list server listening on port " << PORT << '\n';
     std::cout << "Registered with name server at " << argv[1] << ':' << nameServerPort << '\n';
