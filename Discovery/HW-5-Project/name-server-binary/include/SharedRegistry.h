@@ -11,6 +11,8 @@ struct ServiceProvider {
     std::string identifier{}; //WOuld this be message ID?
     std::string host{};
     std::int32_t port{};
+    // Introduce a new var, last hearbeat
+    std::chrono::system_clock::time_point lastHeartbeat{};
 };
 
 struct SharedRegistry {
