@@ -7,12 +7,13 @@
 #include <vector>
 
 struct ServiceProvider {
-    std::string identifier{};
+    std::string identifier{}; //WOuld this be message ID?
     std::string host{};
     std::int32_t port{};
 };
 
 struct SharedRegistry {
     std::unordered_map<std::string, std::vector<ServiceProvider>> services{};
+    // String Represents Service Name and maps to a vector that is the service provider.
     std::mutex mutex{};
 };
