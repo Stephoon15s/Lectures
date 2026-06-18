@@ -163,7 +163,7 @@ bool registerWithNameServer(const std::string& nameServerHost,
     if (registerOpcode == NameServerResponseOpcode::Ok) {
         std::int32_t messageId{2};
         while(true){
-            std::thread::sleep_for(std::chrono::seconds(5));
+            std::this_thread::sleep_for(std::chrono::seconds(5));
 
             // THE HEART BEAT REQUEST STARTS HERE
             const std::vector<std::uint8_t> registerPayload{buildHeartbeatRequest(serviceName, providerId)};
@@ -174,7 +174,9 @@ bool registerWithNameServer(const std::string& nameServerHost,
                 closeSocket(fd);
                 return false;
             }
-            
+
+            std::cout << "HEARTBEAT!\n"; // Used to confirm that we are sending the Heart Beat
+            /*
             std::optional<std::vector<std::uint8_t>> responseMessage{readMessage(fd)};
             if (!responseMessage.has_value()) {
                 std::cerr << "Failed to receive registration response from name server\n";
@@ -188,7 +190,7 @@ bool registerWithNameServer(const std::string& nameServerHost,
                 closeSocket(fd);
                 return false;
             }
-
+            */
             // THE HEART BEAT REQUEST ENDS HERE
         }
         closeSocket(fd);
