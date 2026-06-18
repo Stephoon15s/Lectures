@@ -10,3 +10,8 @@ Task List:
 
 - Build Hearbeat Request is in Name Server Handler.
 ./list_server_binary 127.0.0.1 9091
+
+
+6/18/2026:
+
+I've implemented the changes to list-server-binary. I make a new thread to run register with name server. I enter an infinite loop that will pause 5 seconds before sending a heartbeat request. I know it is sent because it doesn't return.
