@@ -161,6 +161,36 @@ bool registerWithNameServer(const std::string& nameServerHost,
 
     const auto registerOpcode{static_cast<NameServerResponseOpcode>(registerOpcodeValue.value())};
     if (registerOpcode == NameServerResponseOpcode::Ok) {
+        std::int32_t messageId{2};
+        while(true){
+            std::thread::sleep_for(std::chrono::seconds(5));
+
+            // THE HEART BEAT REQUEST STARTS HERE
+            const std::vector<std::uint8_t> registerPayload{buildHeartbeatRequest(serviceName, providerId)};
+
+            // Send the Message
+            if (!sendAll(fd, frameSuppressibleMessage(clientId.value(), messageId++, registerPayload))) {
+                std::cerr << "Failed to send registration request to name server\n";
+                closeSocket(fd);
+                return false;
+            }
+            
+            std::optional<std::vector<std::uint8_t>> responseMessage{readMessage(fd)};
+            if (!responseMessage.has_value()) {
+                std::cerr << "Failed to receive registration response from name server\n";
+                closeSocket(fd);
+                return false;
+            }
+            MessageReader registerReader{responseMessage.value(), 0};
+            const auto registerOpcodeValue{registerReader.readByte()};
+            if (!registerOpcodeValue.has_value()) {
+                std::cerr << "Registration response missing opcode\n";
+                closeSocket(fd);
+                return false;
+            }
+
+            // THE HEART BEAT REQUEST ENDS HERE
+        }
         closeSocket(fd);
         return true;
     }

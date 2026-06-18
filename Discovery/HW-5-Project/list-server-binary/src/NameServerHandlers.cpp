@@ -9,3 +9,11 @@ std::vector<std::uint8_t> buildRegisterRequest(const std::string& serviceName,
     appendInt32(payload, port);
     return payload;
 }
+
+std::vector<std::uint8_t> buildHeartbeatRequest(const std::string& serviceName,
+    const std::string& providerId){
+    std::vector<std::uint8_t> payload{static_cast<std::uint8_t>(NameServerRequestOpcode::Heartbeat)};
+    appendString(payload, serviceName);
+    appendString(payload, providerId);
+    return payload;
+    }
