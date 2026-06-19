@@ -1,0 +1,3 @@
+/home/falco/Projects/Lectures/Discovery/HW-5-Project/name-server-binary/build/CMakeFiles/name_server_binary.dir
+/home/falco/Projects/Lectures/Discovery/HW-5-Project/name-server-binary/build/CMakeFiles/edit_cache.dir
+/home/falco/Projects/Lectures/Discovery/HW-5-Project/name-server-binary/build/CMakeFiles/rebuild_cache.dir
