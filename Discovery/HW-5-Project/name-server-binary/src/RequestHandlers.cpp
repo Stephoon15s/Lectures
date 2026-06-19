@@ -118,6 +118,8 @@ std::vector<std::uint8_t> handleResolveRequest(MessageReader& reader, SharedRegi
     }
 
     ServiceProvider provider{};
+    // Set up last Hearneat Update.
+    provider.lastHeartbeat = std::chrono::system_clock::now();
     {
         std::lock_guard<std::mutex> lock{registry.mutex};
         auto servicesIt{registry.services.find(serviceName.value())};

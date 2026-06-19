@@ -15,3 +15,6 @@ Task List:
 6/18/2026:
 
 I've implemented the changes to list-server-binary. I make a new thread to run register with name server. I enter an infinite loop that will pause 5 seconds before sending a heartbeat request. I know it is sent because it doesn't return.
+
+Added the last Heart Beat Var
+added the time update to when I make a service providwer object.
