@@ -103,8 +103,8 @@ std::vector<std::uint8_t> handleHeartbeatRequest(MessageReader& reader, SharedRe
         if (providerIt == servicesIt->second.end()) {
             return buildErrorResponse("provider not found");
         }
-
         // TODO: do something with the heartbeat.
+        providerIt.lastHeartbeat = std::chrono::system_clock::now();
 
     }
 
