@@ -177,6 +177,7 @@ bool registerWithNameServer(const std::string& nameServerHost,
 
             std::cout << "HEARTBEAT!\n"; // Used to confirm that we are sending the Heart Beat
             
+            // Informs us that we got the reply back
             std::optional<std::vector<std::uint8_t>> responseMessage{readMessage(fd)};
             if (!responseMessage.has_value()) {
                 std::cerr << "Failed to receive registration response from name server\n";
@@ -190,14 +191,18 @@ bool registerWithNameServer(const std::string& nameServerHost,
                 closeSocket(fd);
                 return false;
             }
-            // 
-            if (registerOpcode == NameServerResponseOpcode::Error) {
-                // Heart Beat Failed
-                
-                closeSocket(fd);
-                return false;
+            if (registerOpcode == NameServerResponseOpcode::Ok) {
+                std::cout << "Received the Heart Beat\n";
             }
+
+            // What to do if it does not return back
+            if (registerOpcode == NameServerResponseOpcode::Error){
+                std::cout<< "We didn't get a response\n";
+                break;
+            }
+
             // THE HEART BEAT REQUEST ENDS HERE
+            
         }
         closeSocket(fd);
         return true;

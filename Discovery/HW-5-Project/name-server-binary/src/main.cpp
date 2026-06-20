@@ -240,7 +240,8 @@ void helper(SharedRegistry& registry){
                 auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->lastHeartbeat);
 
                 // Remove if greater than 10
-                if (duration.count() > 10){
+                // Rework thi
+                if (duration.count() > 3){
                      std::cout << "Removing "
                               << it->identifier
                               << '\n';

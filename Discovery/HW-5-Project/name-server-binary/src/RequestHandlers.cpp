@@ -40,10 +40,11 @@ std::vector<std::uint8_t> handleRegisterRequest(MessageReader& reader, SharedReg
         std::vector<ServiceProvider>& providers{registry.services[serviceName.value()]};
         auto existing{findProvider(providers, providerId.value())};
         if (existing == providers.end()) {
-            providers.push_back(ServiceProvider{providerId.value(), host.value(), port.value()});
+            providers.push_back(ServiceProvider{providerId.value(), host.value(), port.value(), std::chrono::system_clock::now()});
         } else {
             existing->host = host.value();
             existing->port = port.value();
+            existing->lastHeartbeat = std::chrono::system_clock::now();
         }
     }
 
