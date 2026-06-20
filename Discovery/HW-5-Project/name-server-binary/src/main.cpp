@@ -230,6 +230,8 @@ int main() {
 
     std::cout << "Name server listening on port " << PORT << '\n';
 
+    // Initialize the thread here
+
     while (true) {
         sockaddr_in clientAddr{};
         socklen_t clientLen{sizeof(clientAddr)};
