@@ -241,7 +241,7 @@ void helper(SharedRegistry& registry){
 
                 // Remove if greater than 10
                 if (duration.count() > 10){
-                     std::cout << "[Cleanup] Removing "
+                     std::cout << "Removing "
                               << it->identifier
                               << '\n';
                     std::cout << "REMOVING\n";
