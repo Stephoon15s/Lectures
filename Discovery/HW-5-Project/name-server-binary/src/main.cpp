@@ -17,6 +17,8 @@
 #include <thread>
 #include <unistd.h>
 #include <vector>
+#include <chrono>
+#include <mutex>
 
 std::vector<std::uint8_t> handleRequest(RequestOpcode opcode,
                                         MessageReader& reader,
@@ -221,6 +223,42 @@ int createServerSocket(int port) {
     return serverFd;
 }
 
+void helper(SharedRegistry& registry){
+    while (true){
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    {
+        std::lock_guard<std::mutex> lock{registry.mutex};
+        // Ittterate through all service providers, calc time from last heart beat, remove if
+        // it exceeds 10 seconds
+        auto currentTime = std::chrono::system_clock::now();
+
+        for (auto& [serviceName, providers] : registry.services){
+            // Iterate through service names
+            for (auto it = providers.begin(); it != providers.end();){
+                // Iterate through the vector of providers
+                // Calc Time
+                auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->lastHeartbeat);
+
+                // Remove if greater than 10
+                if (duration.count() > 10){
+                     std::cout << "[Cleanup] Removing "
+                              << it->identifier
+                              << '\n';
+                    std::cout << "REMOVING\n";
+                    it = providers.erase(it);
+                }else{
+                    ++it;
+                }
+
+            }
+
+        }
+
+    }
+
+    }
+}
+
 int main() {
     constexpr int PORT{9091};
     static std::atomic<std::int32_t> nextClientId{1};
@@ -231,6 +269,16 @@ int main() {
     std::cout << "Name server listening on port " << PORT << '\n';
 
     // Initialize the thread here
+    std::thread pulseThread{helper, std::ref(registry)};
+
+    if (pulseThread.joinable()){
+        // It worked
+        std::cout << " Pulse Thread is made\n";
+    }else{
+        // It failed
+        closeSocket(serverFd);
+        return 1;
+    }
 
     while (true) {
         sockaddr_in clientAddr{};
