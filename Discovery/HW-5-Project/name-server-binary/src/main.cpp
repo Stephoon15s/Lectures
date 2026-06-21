@@ -230,18 +230,19 @@ void helper(SharedRegistry& registry){
         std::lock_guard<std::mutex> lock{registry.mutex};
         // Ittterate through all service providers, calc time from last heart beat, remove if
         // it exceeds 10 seconds
-        auto currentTime = std::chrono::system_clock::now();
 
         for (auto& [serviceName, providers] : registry.services){
             // Iterate through service names
             for (auto it = providers.begin(); it != providers.end();){
                 // Iterate through the vector of providers
                 // Calc Time
+                auto currentTime = std::chrono::system_clock::now();
                 auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->lastHeartbeat);
 
                 // Remove if greater than 10
                 // Rework thi
-                if (duration.count() > 10){
+                std::cout << duration.count() << std::endl;
+                if (duration.count() > 3){
                      std::cout << "Removing "
                               << it->identifier
                               << '\n';
