@@ -175,12 +175,28 @@ bool registerWithNameServer(const std::string& nameServerHost,
                 return false;
             }
 
-            auto heartbeatResponse{readMessage(fd)};
+            std::optional<std::vector<std::uint8_t>> heartbeatResponse{readMessage(fd)};
             if (!heartbeatResponse.has_value()) {
                 std::cerr << "Heartbeat response missing\n";
                 closeSocket(fd);
                 return false;
             }
+            MessageReader heartBeatReader{heartbeatResponse.value(),0};
+            const auto heartBeatOpcodeValue{heartBeatReader.readByte()};
+            if (!heartBeatOpcodeValue.has_value()){
+                std::cerr << "Heartbeat Response Missing Opcode\n";
+                closeSocket(fd);
+                return false;
+            }
+            const auto heartBeatOpcode{static_cast<NameServerResponseOpcode>(heartBeatOpcodeValue.value())};
+            if (heartBeatOpcode == NameServerResponseOpcode::Ok){
+                std::cout << "The Name Server Got the HeartBeat\n";
+            }
+            if (heartBeatOpcode == NameServerResponseOpcode::Error){
+                std::cout << "The Name Server did not get the HeartBeat\n";
+                break;
+            }
+
             //std::cout << "HEARTBEAT!\n"; // Used to confirm that we are sending the Heart Beat
         
 
