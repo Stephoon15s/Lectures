@@ -241,7 +241,7 @@ void helper(SharedRegistry& registry){
 
                 // Remove if greater than 10
                 // Rework thi
-                if (duration.count() > 3){
+                if (duration.count() > 10){
                      std::cout << "Removing "
                               << it->identifier
                               << '\n';

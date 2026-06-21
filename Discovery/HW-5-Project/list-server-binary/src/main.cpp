@@ -175,7 +175,13 @@ bool registerWithNameServer(const std::string& nameServerHost,
                 return false;
             }
 
-            std::cout << "HEARTBEAT!\n"; // Used to confirm that we are sending the Heart Beat
+            auto heartbeatResponse{readMessage(fd)};
+            if (!heartbeatResponse.has_value()) {
+                std::cerr << "Heartbeat response missing\n";
+                closeSocket(fd);
+                return false;
+            }
+            //std::cout << "HEARTBEAT!\n"; // Used to confirm that we are sending the Heart Beat
         
 
             // THE HEART BEAT REQUEST ENDS HERE

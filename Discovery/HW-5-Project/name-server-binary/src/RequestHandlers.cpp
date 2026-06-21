@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <iostream>
 
 #include "ResponseHandlers.h"
 
