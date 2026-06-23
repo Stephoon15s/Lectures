@@ -163,7 +163,7 @@ bool registerWithNameServer(const std::string& nameServerHost,
     if (registerOpcode == NameServerResponseOpcode::Ok) {
         std::int32_t messageId{2};
         while(true){
-            std::this_thread::sleep_for(std::chrono::seconds(5));
+            std::this_thread::sleep_for(std::chrono::seconds(10));
 
             // THE HEART BEAT REQUEST STARTS HERE
             const std::vector<std::uint8_t> registerPayload{buildHeartbeatRequest(serviceName, providerId)};

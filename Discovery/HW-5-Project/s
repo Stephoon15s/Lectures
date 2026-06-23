@@ -22,3 +22,7 @@ added the time update to when I make a service providwer object.
 6/19/2026:
 
 Added the check for the time duration. Issue is that the name server seems to keep receiving requests from the list server.
+
+6/20/2026:
+
+Code Works now, however it seems the duration between heartbeats vary, leading to inconsistent results.
